@@ -1,0 +1,1328 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>理解 constraints（約束條件） | Flutter</title><link rel="icon" href="/assets/images/branding/flutter/icon/64.png"><link rel="apple-touch-icon" href="/assets/images/branding/flutter/logo/flutter-logomark-320px.png"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><meta name="google-site-verification" content="HFqxhSbf9YA_0rBglNLzDiWnrHiK_w4cqDh2YD2GEY4"><script>window.dataLayer=window.dataLayer||[],function(e,t,a,n,o){e[n]=e[n]||[],e[n].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var s=t.getElementsByTagName(a)[0],c=t.createElement(a);c.async=!0,c.src="https://www.googletagmanager.com/gtm.js?id="+o+("dataLayer"!=n?"&l="+n:""),s.parentNode.insertBefore(c,s)}(window,document,"script","dataLayer","GTM-ND4LWWZ"),function(e,t,a,n,o,s,c){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=+new Date,s=t.createElement(a),c=t.getElementsByTagName(a)[0],s.async=1,s.src=n,c.parentNode.insertBefore(s,c)}(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-67589403-1","auto"),ga("send","pageview")</script><meta name="description" content="Flutter 的元件（Widgets）constraints（約束條件）、尺寸、定位及其互動方式模型說明。"><meta name="twitter:card" content="summary"><meta name="twitter:site" content="@flutterdev"><meta property="og:title" content="理解 constraints（約束條件）"><meta property="og:url" content="https://docs.flutter.dev/ui/layout/constraints"><meta property="og:description" content="Flutter 的元件（Widgets）constraints（約束條件）、尺寸、定位及其互動方式模型說明。"><meta property="og:image" content="https://docs.flutter.dev/assets/images/flutter-logo-sharing.png"><link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Google+Sans+Mono:wght@400;500;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0" rel="stylesheet"><script>window.__CALLBACKS=[]</script><link rel="stylesheet" href="/assets/css/main.css?v=7"><body class="show-windows"><section id="cookie-notice"><div class="container"><p>docs.flutter.dev 使用來自 Google 的 Cookie，以提供與提升服務品質，並分析流量。 <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">了解更多</a>.</p><button id="cookie-consent" class="filled-button">好的，知道了</button></div></section><noscript> <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-ND4LWWZ" height="0" width="0" style="display:none;visibility:hidden"> </iframe> </noscript><header class="site-header"><a href="#document-title" id="skip-to-main" class="filled-button"> 跳至主要內容 </a><nav class="navbar"><a id="site-primary-logo" class="site-wordmark" href="/" aria-label="前往 Flutter 文件首頁" title="前往 Flutter 文件首頁"> <img src="/assets/images/branding/flutter/logo/default.svg" alt="Flutter 標誌" width="28"> <span class="name" translate="no">Flutter</span> <span class="subtype">文件</span> </a><div class="navbar-contents"><form action="/search/" class="site-header__search"><input class="search-field site-header__searchfield" type="search" name="q" id="q" autocomplete="off" placeholder="搜尋" aria-label="搜尋"></form><a href="/search" id="fallback-search-button" class="icon-button" aria-label="前往文件搜尋頁面。" title="前往文件搜尋頁面。"> <span class="material-symbols" aria-hidden="true" translate="no">search</span> </a><div id="theme-switcher" class="dropdown"><button class="dropdown-button icon-button" title="選擇主題" aria-label="選擇主題" aria-expanded="false" aria-controls="site-switcher-menu"><span class="material-symbols" aria-hidden="true" translate="no">routine</span></button><div class="dropdown-content" id="theme-menu"><div class="dropdown-menu"><ul role="listbox"><li><button data-theme="light" title="切換至亮色模式" aria-label="切換至亮色模式" aria-selected="false"><span class="material-symbols" aria-hidden="true" translate="no">light_mode</span> <span>亮色</span></button><li><button data-theme="dark" title="切換至深色模式" aria-label="切換至深色模式" aria-selected="false"><span class="material-symbols" aria-hidden="true" translate="no">dark_mode</span> <span>深色</span></button><li><button data-theme="auto" title="跟隨裝置主題" aria-label="跟隨裝置主題" aria-selected="false"><span class="material-symbols" aria-hidden="true" translate="no">night_sight_auto</span> <span>自動</span></button></ul></div></div></div><div id="site-switcher" class="dropdown"><button class="dropdown-button icon-button" aria-expanded="false" aria-controls="site-switcher-menu" aria-label="在 Flutter 與 Dart 網站間切換"><span class="material-symbols" aria-hidden="true" translate="no">apps</span></button><div class="dropdown-content" id="site-switcher-menu"><nav class="dropdown-menu" role="menu"><ul><li role="presentation"><a href="https://flutter.dev" class="site-wordmark" role="menuitem" title="Flutter 首頁" aria-label="前往 Flutter 首頁"> <img src="/assets/images/branding/flutter/logo/default.svg" alt="Flutter 標誌" width="28"> <span class="name" translate="no">Flutter</span> </a><li role="presentation"><a href="/" class="current-site site-wordmark" role="menuitem" aria-current="true" title="Flutter 文件首頁" aria-label="前往 Flutter 文件首頁"> <img src="/assets/images/branding/flutter/logo/default.svg" alt="Flutter 標誌" width="28"> <span class="name" translate="no">Flutter</span> <span class="subtype">文件</span> </a><li role="presentation"><a href="https://api.flutter.dev" class="site-wordmark" role="menuitem" title="Flutter API 參考資料" aria-label="前往 Flutter API 參考資料"> <img src="/assets/images/branding/flutter/logo/default.svg" alt="Flutter 標誌" width="28"> <span class="name" translate="no">Flutter</span> <span class="subtype">API</span> </a><li aria-hidden="true" class="dropdown-divider" role="separator"><li role="presentation"><a href="https://dart.dev" class="site-wordmark" role="menuitem" title="Dart 首頁" aria-label="前往 Dart 首頁"> <img src="/assets/images/branding/dart/logo.svg" alt="Dart 標誌" width="28" height="28"> <span class="name">Dart</span> </a><li role="presentation"><a href="https://dartpad.dev" class="site-wordmark" role="menuitem" title="DartPad 練習場" aria-label="前往 DartPad 練習場"> <img src="/assets/images/branding/dart/logo.svg" alt="Dart 標誌" width="28" height="28"> <span class="name">DartPad</span> </a><li role="presentation"><a href="https://pub.dev" class="site-wordmark" role="menuitem" title="pub.dev 首頁" aria-label="前往 pub.dev 首頁"> <img src="/assets/images/branding/dart/logo.svg" alt="Dart 標誌" width="28" height="28"> <span class="name">pub.dev</span> </a></ul></nav></div></div><a id="call-to-action" class="filled-button" href="/get-started/quick">開始使用</a> <button id="menu-toggle" class="icon-button" type="button" aria-controls="sidenav" aria-label="切換導覽" title="切換導覽"><span class="material-symbols" aria-hidden="true" translate="no">menu</span> <span class="material-symbols" aria-hidden="true" translate="no">close</span></button></div></nav></header><div id="site-below-header"><div id="site-main-row" class="no-toc"><div id="sidenav" class="site-sidebar"><nav><ul><li class="nav-header">開始使用<li class="nav-item"><a class="nav-link" href="/get-started"><div><span>設定 Flutter</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-3" role="button" aria-expanded="false" aria-controls="sidenav-3"><span>安裝 Flutter</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-3"><li class="nav-item"><a class="nav-link" href="/install"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/install/with-vs-code"><div><span>使用 VS Code 安裝</span></div></a><li class="nav-item"><a class="nav-link" href="/install/manual"><div><span>手動安裝</span></div></a><li class="nav-item"><a class="nav-link" href="/install/upgrade"><div><span>升級 SDK</span></div></a><li class="nav-item"><a class="nav-link" href="/install/archive"><div><span>SDK 封存</span></div></a><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><a class="nav-link" href="/install/add-to-path"><div><span>加入至路徑</span></div></a><li class="nav-item"><a class="nav-link" href="/install/troubleshoot"><div><span>疑難排解</span></div></a><li class="nav-item"><a class="nav-link" href="/install/uninstall"><div><span>解除安裝 SDK</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-4" role="button" aria-expanded="false" aria-controls="sidenav-4"><span>學習 Flutter</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-4"><li class="nav-item"><a class="nav-link" href="/get-started/learn-flutter"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/codelab"><div><span>撰寫第一個應用程式</span></div></a><li class="nav-item"><button class="collapsible nav-link" data-toggle="collapse" data-target="#sidenav-4-3" role="button" aria-expanded="true" aria-controls="sidenav-4-3"><span>學習基礎知識</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav show" id="sidenav-4-3"><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/dart"><div><span>Dart 入門</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/widgets"><div><span>元件</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/layout"><div><span>版面配置</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/state-management"><div><span>狀態管理</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/user-input"><div><span>處理使用者輸入</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/networking"><div><span>網路與資料</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/fundamentals/local-caching"><div><span>本機資料與快取</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-4-4" role="button" aria-expanded="false" aria-controls="sidenav-4-4"><span>來自其他平台？</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-4-4"><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/android-devs"><div><span>給 Android 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/compose-devs"><div><span>給 Jetpack Compose 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/swiftui-devs"><div><span>給 SwiftUI 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/uikit-devs"><div><span>給 UIKit 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/react-native-devs"><div><span>給 React Native 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/web-devs"><div><span>給 Web 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/xamarin-forms-devs"><div><span>給 Xamarin.Forms 開發者的 Flutter 指南</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/declarative"><div><span>宣告式 UI 入門</span></div></a><li class="nav-item"><a class="nav-link" href="/get-started/flutter-for/dart-swift-concurrency"><div><span>Flutter 與 Swift 並行處理</span></div></a></ul><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><a class="nav-link" href="/reference/learning-resources"><div><span>範例與教學</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-5" role="button" aria-expanded="false" aria-controls="sidenav-5"><span>掌握最新資訊</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-5"><li class="nav-item"><a class="nav-link" href="/release/release-notes"><div><span>版本資訊</span></div></a><li class="nav-item"><a class="nav-link" href="/release/breaking-changes"><div><span>重大變更</span></div></a><li class="nav-item"><a class="nav-link" href="/release/compatibility-policy"><div><span>相容性政策</span></div></a><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><a class="nav-link" href="https://blog.flutter.dev" target="_blank" rel="noopener"><div><span>Flutter 部落格</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="/release/whats-new"><div><span>文件最新更新</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6" role="button" aria-expanded="false" aria-controls="sidenav-6"><span>應用程式解決方案</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6"><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-1" role="button" aria-expanded="false" aria-controls="sidenav-6-1"><span>使用 Firebase 開發</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-1"><li class="nav-item"><a class="nav-link" href="/data-and-backend/firebase"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/docs/flutter" target="_blank" rel="noopener"><div><span>認識適用於 Flutter 的 Firebase</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://www.youtube.com/watch?v=wUSkeTaBonA" target="_blank" rel="noopener"><div><span>深入了解適用於 Flutter 的 Firebase</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/codelabs/firebase-auth-in-flutter-apps" target="_blank" rel="noopener"><div><span>使用 FirebaseUI 為 Flutter 應用程式新增使用者驗證流程</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/codelabs/firebase-get-to-know-web" target="_blank" rel="noopener"><div><span>深入了解適用於 Web 的 Firebase</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-2" role="button" aria-expanded="false" aria-controls="sidenav-6-2"><span>建置多平台遊戲</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-2"><li class="nav-item"><a class="nav-link" href="/resources/games-toolkit"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/games/achievements-leaderboard"><div><span>新增成就與排行榜</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/codelabs/build-leaderboards-with-firestore#0" target="_blank" rel="noopener"><div><span>使用 Firestore 建置排行榜</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/plugins/google-mobile-ads"><div><span>新增廣告</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/games/firestore-multiplayer"><div><span>新增多人遊戲支援</span></div></a><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/flutter-in-app-purchases" target="_blank" rel="noopener"><div><span>新增應用程式內購</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/codelabs/firebase-auth-in-flutter-apps" target="_blank" rel="noopener"><div><span>新增使用者驗證</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/docs/crashlytics/get-started?platform=flutter" target="_blank" rel="noopener"><div><span>使用 Crashlytics 偵錯</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/flutter-flame-brick-breaker" target="_blank" rel="noopener"><div><span>Flutter 與 Flame 入門</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-3" role="button" aria-expanded="false" aria-controls="sidenav-6-3"><span>替應用程式創造收益</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-3"><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-3-1" role="button" aria-expanded="false" aria-controls="sidenav-6-3-1"><span>整合廣告</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-3-1"><li class="nav-item"><a class="nav-link" href="/resources/ads-overview"><div><span>廣告總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/plugins/google-mobile-ads"><div><span>新增廣告</span></div></a><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter" target="_blank" rel="noopener"><div><span>在 Flutter 應用程式中新增 AdMob 廣告</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/admob-inline-ads-in-flutter" target="_blank" rel="noopener"><div><span>新增 AdMob 橫幅與原生內嵌廣告</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://www.youtube.com/watch?v=U8x5n6RwZOo" target="_blank" rel="noopener"><div><span>整合多媒體（影片）廣告</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://developers.google.com/admob/flutter/mediation" target="_blank" rel="noopener"><div><span>Google AdMob 廣告仲介</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://pub.dev/packages/interactive_media_ads" target="_blank" rel="noopener"><div><span>互動媒體廣告 SDK</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-3-2" role="button" aria-expanded="false" aria-controls="sidenav-6-3-2"><span>支援付款</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-3-2"><li class="nav-item"><a class="nav-link" href="/resources/payments-overview"><div><span>付款總覽</span></div></a><li class="nav-item"><a class="nav-link" href="https://pub.dev/packages/pay" target="_blank" rel="noopener"><div><span>Google Pay 套件</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/flutter-in-app-purchases" target="_blank" rel="noopener"><div><span>新增應用程式內購</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-6-4" role="button" aria-expanded="false" aria-controls="sidenav-6-4"><span>整合地圖</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-6-4"><li class="nav-item"><a class="nav-link" href="https://codelabs.developers.google.com/codelabs/google-maps-in-flutter" target="_blank" rel="noopener"><div><span>在 Flutter 應用程式中整合 Google 地圖</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://developers.google.com/maps/flutter-package" target="_blank" rel="noopener"><div><span>Google Maps 套件</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-7" role="button" aria-expanded="false" aria-controls="sidenav-7"><span>AI 解決方案</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-7"><li class="nav-item"><a class="nav-link" href="/ai/create-with-ai"><div><span>使用 AI 創作</span></div></a><li class="nav-item"><a class="nav-link" href="/ai/ai-rules"><div><span>AI 規範</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-7-3" role="button" aria-expanded="false" aria-controls="sidenav-7-3"><span>AI 工具包</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-7-3"><li class="nav-item"><a class="nav-link" href="/ai-toolkit"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/ai-toolkit/user-experience"><div><span>使用者體驗</span></div></a><li class="nav-item"><a class="nav-link" href="/ai-toolkit/feature-integration"><div><span>功能整合</span></div></a><li class="nav-item"><a class="nav-link" href="/ai-toolkit/custom-llm-providers"><div><span>自訂 LLM 服務提供者</span></div></a><li class="nav-item"><a class="nav-link" href="/ai-toolkit/chat-client-sample"><div><span>聊天用戶端範例</span></div></a></ul><li class="nav-item"><a class="nav-link" href="https://dart.dev/tools/mcp-server" target="_blank" rel="noopener"><div><span>Dart 與 Flutter MCP 伺服器</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://github.com/flutter/genui" target="_blank" rel="noopener"><div><span>適用於 Flutter 的 GenUI SDK</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/docs/ai-logic/get-started?platform=flutter" target="_blank" rel="noopener"><div><span>Firebase AI Logic</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-header">使用者介面<li class="nav-item"><a class="nav-link" href="/ui"><div><span>介紹</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-11" role="button" aria-expanded="false" aria-controls="sidenav-11"><span>元件目錄</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-11"><li class="nav-item"><a class="nav-link" href="/ui/widgets"><div><span>總覽</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-11-2" role="button" aria-expanded="false" aria-controls="sidenav-11-2"><span>設計系統</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-11-2"><li class="nav-item"><a class="nav-link" href="/ui/widgets/cupertino"><div><span>Cupertino</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/material"><div><span>Material 元件</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-11-3" role="button" aria-expanded="false" aria-controls="sidenav-11-3"><span>基礎元件</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-11-3"><li class="nav-item"><a class="nav-link" href="/ui/widgets/accessibility"><div><span>無障礙</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/animation"><div><span>動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/assets"><div><span>素材</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/async"><div><span>非同步</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/basics"><div><span>基礎知識</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/input"><div><span>輸入</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/interaction"><div><span>互動</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/layout"><div><span>版面配置</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/painting"><div><span>繪製</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/scrolling"><div><span>捲動</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/styling"><div><span>樣式</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/widgets/text"><div><span>文字</span></div></a></ul></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-12" role="button" aria-expanded="false" aria-controls="sidenav-12"><span>版面配置</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-12"><li class="nav-item"><a class="nav-link" href="/ui/layout"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/layout/tutorial"><div><span>建置版面配置</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-12-3" role="button" aria-expanded="false" aria-controls="sidenav-12-3"><span>清單與格狀檢視</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-12-3"><li class="nav-item"><a class="nav-link" href="/cookbook/lists/basic-list"><div><span>建立並使用清單</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/horizontal-list"><div><span>建立水平清單</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/grid-lists"><div><span>建立格狀檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/mixed-list"><div><span>建立包含不同項目型別的清單</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/spaced-items"><div><span>建立帶間距的清單</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/long-lists"><div><span>處理長清單</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-12-4" role="button" aria-expanded="false" aria-controls="sidenav-12-4"><span>捲動</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-12-4"><li class="nav-item"><a class="nav-link" href="/ui/layout/scrolling"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/layout/scrolling/slivers"><div><span>使用 sliver 打造進階捲動效果</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/lists/floating-app-bar"><div><span>將浮動應用列置於清單上方</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/effects/parallax-scrolling"><div><span>建立捲動視差效果</span></div></a></ul></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-13" role="button" aria-expanded="false" aria-controls="sidenav-13"><span>自適應與回應式設計</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-13"><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/general"><div><span>一般策略</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/safearea-mediaquery"><div><span>SafeArea 與 MediaQuery</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/large-screens"><div><span>大型螢幕與可摺疊裝置</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/input"><div><span>使用者輸入與無障礙</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/capabilities"><div><span>功能與政策</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/platform-adaptations"><div><span>自動平台調適</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/best-practices"><div><span>最佳實務</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/adaptive-responsive/more-info"><div><span>其他資源</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-14" role="button" aria-expanded="false" aria-controls="sidenav-14"><span>設計與主題</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-14"><li class="nav-item"><a class="nav-link" href="/cookbook/design/themes"><div><span>使用主題共用樣式</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/design/material"><div><span>Material 設計</span></div></a><li class="nav-item"><a class="nav-link" href="/release/breaking-changes/material-3-migration"><div><span>遷移至 Material 3</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-14-4" role="button" aria-expanded="false" aria-controls="sidenav-14-4"><span>文字</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-14-4"><li class="nav-item"><a class="nav-link" href="/ui/design/text/typography"><div><span>字體與排版</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/design/fonts"><div><span>使用自訂字體</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/design/package-fonts"><div><span>從套件匯出字型</span></div></a><li class="nav-item"><a class="nav-link" href="https://pub.dev/packages/google_fonts" target="_blank" rel="noopener"><div><span>Google Fonts 套件</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-14-5" role="button" aria-expanded="false" aria-controls="sidenav-14-5"><span>自訂圖形</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-14-5"><li class="nav-item"><a class="nav-link" href="/ui/design/graphics/fragment-shaders"><div><span>使用自訂片段著色器</span></div></a></ul></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-15" role="button" aria-expanded="false" aria-controls="sidenav-15"><span>互動性</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-15"><li class="nav-item"><a class="nav-link" href="/ui/interactivity"><div><span>為應用程式新增互動功能</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-15-2" role="button" aria-expanded="false" aria-controls="sidenav-15-2"><span>手勢</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-15-2"><li class="nav-item"><a class="nav-link" href="/ui/interactivity/gestures"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/gestures/handling-taps"><div><span>處理點擊</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/interactivity/gestures/drag-outside"><div><span>將物件從應用程式拖曳到外部</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/effects/drag-a-widget"><div><span>在應用程式內拖曳 UI 元素</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/gestures/ripples"><div><span>新增 Material 點按漣漪效果</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/gestures/dismissible"><div><span>實作滑動關閉</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-15-3" role="button" aria-expanded="false" aria-controls="sidenav-15-3"><span>輸入與表單</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-15-3"><li class="nav-item"><a class="nav-link" href="/cookbook/forms/text-input"><div><span>建立文字欄位並設定樣式</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/forms/retrieve-input"><div><span>取得文字欄位的值</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/forms/text-field-changes"><div><span>處理文字欄位的變更</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/forms/focus"><div><span>管理文字欄位焦點</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/forms/validation"><div><span>建置含驗證的表單</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/cookbook/design/snackbars"><div><span>顯示 Snackbar</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/interactivity/actions-and-shortcuts"><div><span>實作動作與快速鍵</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/interactivity/focus"><div><span>管理鍵盤焦點</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-16" role="button" aria-expanded="false" aria-controls="sidenav-16"><span>素材與媒體</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-16"><li class="nav-item"><a class="nav-link" href="/ui/assets/assets-and-images"><div><span>新增素材與圖片</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/images/network-image"><div><span>顯示網際網路上的圖片</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/images/fading-in-images"><div><span>使用預留圖片淡入影像</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/plugins/play-video"><div><span>播放與暫停影片</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/assets/asset-transformation"><div><span>在建置時轉換素材</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-17" role="button" aria-expanded="false" aria-controls="sidenav-17"><span>導覽與路由</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-17"><li class="nav-item"><a class="nav-link" href="/ui/navigation"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/design/tabs"><div><span>在應用程式中新增分頁</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/navigation/navigation-basics"><div><span>導覽至新畫面並返回</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/navigation/passing-data"><div><span>傳送資料至新畫面</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/navigation/returning-data"><div><span>從畫面返回資料</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/design/drawer"><div><span>在頁面中新增抽屜選單</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/navigation/deep-linking"><div><span>設定深層連結</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/navigation/set-up-app-links"><div><span>為 Android 設定應用程式連結</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/navigation/set-up-universal-links"><div><span>設定 iOS 通用連結</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/navigation/url-strategies"><div><span>設定 Web URL 策略</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-18" role="button" aria-expanded="false" aria-controls="sidenav-18"><span>動畫與轉場</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-18"><li class="nav-item"><a class="nav-link" href="/ui/animations"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/animations/tutorial"><div><span>教學</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/animations/implicit-animations"><div><span>隱式動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/animation/animated-container"><div><span>為容器屬性設定動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/animation/opacity-animation"><div><span>淡入淡出元件</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/animations/hero-animations"><div><span>Hero 動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/animation/page-route-animation"><div><span>為頁面路由轉場設定動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/animation/physics-simulation"><div><span>使用物理模擬製作動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/animations/staggered-animations"><div><span>交錯動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/effects/staggered-menu-animation"><div><span>建立交錯選單動畫</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/animations/overview"><div><span>API 總覽</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-19" role="button" aria-expanded="false" aria-controls="sidenav-19"><span>無障礙</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-19"><li class="nav-item"><a class="nav-link" href="/ui/accessibility"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/accessibility/ui-design-and-styling"><div><span>UI 設計與樣式</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/accessibility/assistive-technologies"><div><span>輔助技術</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/accessibility/accessibility-testing"><div><span>無障礙測試</span></div></a><li class="nav-item"><a class="nav-link" href="/ui/accessibility/web-accessibility"><div><span>Web 無障礙</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/ui/internationalization"><div><span>國際化</span></div></a><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-header">使用者介面之外<li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23" role="button" aria-expanded="false" aria-controls="sidenav-23"><span>資料與後端</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23"><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23-1" role="button" aria-expanded="false" aria-controls="sidenav-23-1"><span>狀態管理</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23-1"><li class="nav-item"><a class="nav-link" href="/data-and-backend/state-mgmt/intro"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/data-and-backend/state-mgmt/declarative"><div><span>以宣告式思維</span></div></a><li class="nav-item"><a class="nav-link" href="/data-and-backend/state-mgmt/ephemeral-vs-app"><div><span>暫存狀態與應用程式狀態</span></div></a><li class="nav-item"><a class="nav-link" href="/data-and-backend/state-mgmt/simple"><div><span>簡易應用程式狀態管理</span></div></a><li class="nav-item"><a class="nav-link" href="/data-and-backend/state-mgmt/options"><div><span>選項</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23-2" role="button" aria-expanded="false" aria-controls="sidenav-23-2"><span>網路與 HTTP</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23-2"><li class="nav-item"><a class="nav-link" href="/data-and-backend/networking"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/fetch-data"><div><span>從網際網路擷取資料</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/authenticated-requests"><div><span>發出已驗證的請求</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/send-data"><div><span>傳送資料到網際網路</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/update-data"><div><span>透過網際網路更新資料</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/delete-data"><div><span>刪除網際網路上的資料</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/web-sockets"><div><span>透過 WebSocket 通訊</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23-3" role="button" aria-expanded="false" aria-controls="sidenav-23-3"><span>序列化</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23-3"><li class="nav-item"><a class="nav-link" href="/data-and-backend/serialization/json"><div><span>JSON 序列化</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/networking/background-parsing"><div><span>在背景解析 JSON</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23-4" role="button" aria-expanded="false" aria-controls="sidenav-23-4"><span>資料持久化</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23-4"><li class="nav-item"><a class="nav-link" href="/cookbook/persistence/key-value"><div><span>在磁碟儲存鍵值資料</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/persistence/reading-writing-files"><div><span>讀寫檔案</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/persistence/sqlite"><div><span>使用 SQLite 儲存資料</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-23-5" role="button" aria-expanded="false" aria-controls="sidenav-23-5"><span>Firebase</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-23-5"><li class="nav-item"><a class="nav-link" href="/data-and-backend/firebase"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="https://firebase.google.com/docs/flutter/setup" target="_blank" rel="noopener"><div><span>在 Flutter 應用程式中整合 Firebase</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/data-and-backend/google-apis"><div><span>Google API</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-24" role="button" aria-expanded="false" aria-controls="sidenav-24"><span>應用程式架構</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-24"><li class="nav-item"><a class="nav-link" href="/app-architecture"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/concepts"><div><span>架構概念</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/guide"><div><span>應用程式架構指南</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-24-4" role="button" aria-expanded="false" aria-controls="sidenav-24-4"><span>架構案例研究</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-24-4"><li class="nav-item"><a class="nav-link" href="/app-architecture/case-study"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/case-study/ui-layer"><div><span>UI 層</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/case-study/data-layer"><div><span>資料層</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/case-study/dependency-injection"><div><span>相依性注入</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/case-study/testing"><div><span>各層測試</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/app-architecture/recommendations"><div><span>建議</span></div></a><li class="nav-item"><a class="nav-link" href="/app-architecture/design-patterns"><div><span>設計模式</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25" role="button" aria-expanded="false" aria-controls="sidenav-25"><span>平台整合</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25"><li class="nav-item"><a class="nav-link" href="/reference/supported-platforms"><div><span>支援的平台</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/desktop"><div><span>使用 Flutter 建置桌面應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/platform-channels"><div><span>撰寫平台專屬程式碼</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-4" role="button" aria-expanded="false" aria-controls="sidenav-25-4"><span>Android</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-4"><li class="nav-item"><a class="nav-link" href="/platform-integration/android/setup"><div><span>設定 Android 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/splash-screen"><div><span>新增啟動畫面</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/predictive-back"><div><span>新增預測返回功能</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/c-interop"><div><span>綁定至原生程式碼</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/platform-views"><div><span>嵌入原生 Android 檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/call-jetpack-apis"><div><span>呼叫 JetPack API</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/compose-activity"><div><span>啟動 Jetpack Compose 活動</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/restore-state-android"><div><span>在 Android 還原狀態</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/chromeos"><div><span>在 Android 上鎖定 ChromeOS</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/android/sensitive-content"><div><span>保護應用程式的敏感內容</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-5" role="button" aria-expanded="false" aria-controls="sidenav-25-5"><span>iOS</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-5"><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/setup"><div><span>設定 iOS 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/ios-latest"><div><span>最新 iOS 上的 Flutter</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/apple-frameworks"><div><span>善用 Apple 的系統函式庫</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/launch-screen"><div><span>新增啟動畫面</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/ios-app-clip"><div><span>新增 iOS App Clip 支援</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/app-extensions"><div><span>新增 iOS App Extension</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/c-interop"><div><span>綁定至原生程式碼</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/platform-views"><div><span>嵌入原生 iOS 檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/ios-debugging"><div><span>在 iOS 啟用偵錯</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/ios/restore-state-ios"><div><span>在 iOS 還原狀態</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-6" role="button" aria-expanded="false" aria-controls="sidenav-25-6"><span>Linux</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-6"><li class="nav-item"><a class="nav-link" href="/platform-integration/linux/setup"><div><span>設定 Linux 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/linux/building"><div><span>建置 Linux 應用程式</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-7" role="button" aria-expanded="false" aria-controls="sidenav-25-7"><span>macOS</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-7"><li class="nav-item"><a class="nav-link" href="/platform-integration/macos/setup"><div><span>設定 macOS 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/macos/building"><div><span>建置 macOS 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/macos/c-interop"><div><span>綁定至原生程式碼</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/macos/platform-views"><div><span>嵌入原生 macOS 檢視</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-8" role="button" aria-expanded="false" aria-controls="sidenav-25-8"><span>Web</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-8"><li class="nav-item"><a class="nav-link" href="/platform-integration/web"><div><span>Flutter 中的 Web 支援</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/setup"><div><span>設定 Web 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/building"><div><span>建置 Web 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/wasm"><div><span>編譯為 WebAssembly</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/initialization"><div><span>自訂應用程式初始化</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/embedding-flutter-web"><div><span>在任一 Web 應用程式中加入 Flutter</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/web-content-in-flutter"><div><span>Flutter 中的 Web 內容</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/renderers"><div><span>Web 繪圖引擎</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/web-images"><div><span>在 Web 上顯示圖片</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/web/faq"><div><span>Web 常見問題</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-25-9" role="button" aria-expanded="false" aria-controls="sidenav-25-9"><span>Windows</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-25-9"><li class="nav-item"><a class="nav-link" href="/platform-integration/windows/setup"><div><span>設定 Windows 開發環境</span></div></a><li class="nav-item"><a class="nav-link" href="/platform-integration/windows/building"><div><span>建置 Windows 應用程式</span></div></a></ul></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-26" role="button" aria-expanded="false" aria-controls="sidenav-26"><span>套件與外掛</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-26"><li class="nav-item"><a class="nav-link" href="/packages-and-plugins/using-packages"><div><span>使用套件與外掛</span></div></a><li class="nav-item"><a class="nav-link" href="/packages-and-plugins/developing-packages"><div><span>開發套件與外掛</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-26-3" role="button" aria-expanded="false" aria-controls="sidenav-26-3"><span>Swift Package Manager</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-26-3"><li class="nav-item"><a class="nav-link" href="/packages-and-plugins/swift-package-manager/for-app-developers"><div><span>給應用程式開發者</span></div></a><li class="nav-item"><a class="nav-link" href="/packages-and-plugins/swift-package-manager/for-plugin-authors"><div><span>給外掛作者</span></div></a></ul><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><a class="nav-link" href="/packages-and-plugins/favorites"><div><span>Flutter 精選</span></div></a><li class="nav-item"><a class="nav-link" href="https://pub.dev/flutter" target="_blank" rel="noopener"><div><span>套件儲存庫</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-27" role="button" aria-expanded="false" aria-controls="sidenav-27"><span>測試與偵錯</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-27"><li class="nav-header">測試<li class="nav-item"><a class="nav-link" href="/testing/overview"><div><span>總覽</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-27-3" role="button" aria-expanded="false" aria-controls="sidenav-27-3"><span>單元測試</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-27-3"><li class="nav-item"><a class="nav-link" href="/cookbook/testing/unit/introduction"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/testing/unit/mocking"><div><span>模擬相依性</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-27-4" role="button" aria-expanded="false" aria-controls="sidenav-27-4"><span>元件測試</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-27-4"><li class="nav-item"><a class="nav-link" href="/cookbook/testing/widget/introduction"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/testing/widget/finders"><div><span>尋找元件</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/testing/widget/scrolling"><div><span>模擬捲動</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/testing/widget/tap-drag"><div><span>模擬使用者互動</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-27-5" role="button" aria-expanded="false" aria-controls="sidenav-27-5"><span>整合測試</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-27-5"><li class="nav-item"><a class="nav-link" href="/cookbook/testing/integration/introduction"><div><span>介紹</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/integration-tests"><div><span>撰寫並執行整合測試</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/testing/integration/profiling"><div><span>分析整合測試</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/testing/testing-plugins"><div><span>測試外掛</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/plugins-in-tests"><div><span>在測試中處理外掛程式碼</span></div></a><li class="nav-header">偵錯<li class="nav-item"><a class="nav-link" href="/testing/debugging"><div><span>偵錯工具</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/code-debugging"><div><span>透過程式碼偵錯應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/native-debugging"><div><span>使用原生語言偵錯工具</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/common-errors"><div><span>常見的 Flutter 錯誤</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/errors"><div><span>處理錯誤</span></div></a><li class="nav-item"><a class="nav-link" href="/cookbook/maintenance/error-reporting"><div><span>將錯誤回報至服務</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-28" role="button" aria-expanded="false" aria-controls="sidenav-28"><span>效能與最佳化</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-28"><li class="nav-item"><a class="nav-link" href="/perf"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/impeller"><div><span>Impeller</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/best-practices"><div><span>效能最佳實務</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/app-size"><div><span>應用程式大小</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/deferred-components"><div><span>延遲元件</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/rendering-performance"><div><span>繪製效能</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/ui-performance"><div><span>效能分析</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/web-performance"><div><span>Web 效能分析</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/metrics"><div><span>效能指標</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/isolates"><div><span>並行與隔離 Isolate</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/faq"><div><span>效能常見問題</span></div></a><li class="nav-item"><a class="nav-link" href="/perf/appendix"><div><span>附錄</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-29" role="button" aria-expanded="false" aria-controls="sidenav-29"><span>部署</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-29"><li class="nav-item"><a class="nav-link" href="/deployment/obfuscate"><div><span>模糊化 Dart 程式碼</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/flavors"><div><span>為 Android 建立應用程式風味</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/flavors-ios"><div><span>為 iOS 與 macOS 建立應用程式風味</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/android"><div><span>建置並發佈 Android 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/ios"><div><span>建置並發佈 iOS 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/macos"><div><span>建置並發佈 macOS 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/linux"><div><span>建置並發佈 Linux 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/windows"><div><span>建置並發佈 Windows 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/web"><div><span>建置並發佈 Web 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/deployment/cd"><div><span>設定持續部署</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-30" role="button" aria-expanded="false" aria-controls="sidenav-30"><span>加入現有應用程式</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-30"><li class="nav-item"><a class="nav-link" href="/add-to-app"><div><span>介紹</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-30-2" role="button" aria-expanded="false" aria-controls="sidenav-30-2"><span>加入 Android 應用程式</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-30-2"><li class="nav-item"><a class="nav-link" href="/add-to-app/android/project-setup"><div><span>設定 Android 專案</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/android/add-flutter-screen"><div><span>新增單一 Flutter 畫面</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/android/add-flutter-fragment"><div><span>新增 Flutter Fragment</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/android/add-flutter-view"><div><span>新增 Flutter View</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/android/plugin-setup"><div><span>使用 Flutter 外掛</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-30-3" role="button" aria-expanded="false" aria-controls="sidenav-30-3"><span>加入 iOS 應用程式</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-30-3"><li class="nav-item"><a class="nav-link" href="/add-to-app/ios/project-setup"><div><span>設定 iOS 專案</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/ios/add-flutter-screen"><div><span>新增單一 Flutter 畫面</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/platform-integration/web/embedding-flutter-web"><div><span>加入 Web 應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/debugging"><div><span>偵錯嵌入式 Flutter 模組</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/multiple-flutters"><div><span>新增多個 Flutter 執行個體</span></div></a><li class="nav-item"><a class="nav-link" href="/add-to-app/performance"><div><span>載入順序與效能</span></div></a></ul><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-32" role="button" aria-expanded="false" aria-controls="sidenav-32"><span>工具與編輯器</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-32"><li class="nav-item"><a class="nav-link" href="/tools/android-studio"><div><span>Android Studio 與 IntelliJ</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/vs-code"><div><span>Visual Studio Code</span></div></a><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-32-3" role="button" aria-expanded="false" aria-controls="sidenav-32-3"><span>DevTools</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-32-3"><li class="nav-item"><a class="nav-link" href="/tools/devtools"><div><span>總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/android-studio"><div><span>從 Android Studio 與 IntelliJ 執行</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/vscode"><div><span>從 VS Code 執行</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/cli"><div><span>從命令列執行</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/inspector"><div><span>Flutter 檢查器</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/legacy-inspector"><div><span>舊版 Flutter 檢查器</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/performance"><div><span>效能檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/cpu-profiler"><div><span>CPU 分析檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/memory"><div><span>記憶體檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/console"><div><span>偵錯主控台檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/network"><div><span>網路檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/debugger"><div><span>偵錯工具</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/logging"><div><span>記錄檢視</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/app-size"><div><span>應用程式大小工具</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/extensions"><div><span>DevTools 擴充功能</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/deep-links"><div><span>驗證深層連結</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/devtools/release-notes"><div><span>版本資訊</span></div></a></ul><li class="nav-item"><a class="nav-link" href="/tools/widget-previewer"><div><span>Flutter Widget Previewer</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/property-editor"><div><span>Flutter Property Editor</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/sdk"><div><span>SDK 總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/pubspec"><div><span>Flutter 的 pubspec 選項</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/flutter-fix"><div><span>自動修復</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/formatting"><div><span>程式碼格式化</span></div></a></ul><li class="nav-item"><button class="active collapsible nav-link" data-toggle="collapse" data-target="#sidenav-33" role="button" aria-expanded="true" aria-controls="sidenav-33"><span>Flutter 概念</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav show" id="sidenav-33"><li class="nav-item"><a class="nav-link" href="/resources/architectural-overview"><div><span>架構總覽</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/inside-flutter"><div><span>深入 Flutter</span></div></a><li class="nav-item"><a class="active nav-link" href="/ui/layout/constraints"><div><span>理解限制</span></div></a><li class="nav-item"><a class="nav-link" href="/testing/build-modes"><div><span>Flutter 的建置模式</span></div></a><li class="nav-item"><a class="nav-link" href="/tools/hot-reload"><div><span>熱重新載入</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-34" role="button" aria-expanded="false" aria-controls="sidenav-34"><span>資源</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-34"><li class="nav-item"><a class="nav-link" href="/resources/faq"><div><span>常見問題</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/videos"><div><span>影片</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/courses"><div><span>課程</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/bootstrap-into-dart"><div><span>學習 Dart</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/support"><div><span>尋求支援</span></div></a><li aria-hidden="true"><div class="sidenav-divider"></div><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-34-7" role="button" aria-expanded="false" aria-controls="sidenav-34-7"><span>貢獻</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-34-7"><li class="nav-item"><a class="nav-link" href="/contribute"><div><span>為 Flutter 做出貢獻</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/bug-reports"><div><span>撰寫實用的錯誤回報</span></div></a><li class="nav-item"><a class="nav-link" href="/resources/design-docs"><div><span>探索提案功能</span></div></a></ul><li class="nav-item"><button class="collapsed collapsible nav-link" data-toggle="collapse" data-target="#sidenav-34-8" role="button" aria-expanded="false" aria-controls="sidenav-34-8"><span>參考資料</span> <span class="expander material-symbols" aria-hidden="true" translate="no">expand_more</span></button><ul class="collapse nav" id="sidenav-34-8"><li class="nav-item"><a class="nav-link" href="/dash"><div><span>Dash 是誰？</span></div></a><li class="nav-item"><a class="nav-link" href="/reference/widgets"><div><span>元件索引</span></div></a><li class="nav-item"><a class="nav-link" href="/reference/create-new-app"><div><span>建立新應用程式</span></div></a><li class="nav-item"><a class="nav-link" href="/reference/flutter-cli"><div><span>flutter CLI</span></div></a><li class="nav-item"><a class="nav-link" href="https://api.flutter.dev" target="_blank" rel="noopener"><div><span>API 文件</span><span class="material-symbols" aria-hidden="true" translate="no">open_in_new</span></div></a></ul></ul></ul></nav></div><main class="site-content"><div id="site-banner" role="alert"><p>使用全新的 Flutter Extension for Gemini CLI 打造高品質、功能豐富的應用程式。 <a href="https://blog.flutter.dev/meet-the-flutter-extension-for-gemini-cli-f8be3643eaad" target="_blank">深入瞭解</a><br></div><div class="after-leading-content"><article><header id="site-header-wrapper"><h1 id="document-title">理解 constraints（約束條件）</h1><nav class="breadcrumbs" aria-label="麵包屑導覽"><ol vocab="https://schema.org/" typeof="BreadcrumbList"><li class="breadcrumb-item" property="itemListElement" typeof="ListItem"><a href="/ui" property="item" typeof="WebPage"> <span property="name">UI</span> </a><meta property="position" content="0"><span class="child-icon material-symbols" aria-hidden="true" translate="no">chevron_right</span><li class="breadcrumb-item" property="itemListElement" typeof="ListItem"><a href="/ui/layout" property="item" typeof="WebPage"> <span property="name">版面配置</span> </a><meta property="position" content="1"><span class="child-icon material-symbols" aria-hidden="true" translate="no">chevron_right</span><li class="active breadcrumb-item" property="itemListElement" typeof="ListItem" aria-current="page"><a href="/ui/layout/constraints" property="item" typeof="WebPage"> <span property="name">理解 constraints（約束條件）</span> </a><meta property="position" content="2"></ol></nav></header><img src="/assets/images/docs/ui/layout/article-hero-image.png" alt="文章主圖"><aside class="alert alert-info"><div class="alert-header"><i class="material-symbols" aria-hidden="true" translate="no">info</i> <span>Note</span></div><div class="alert-content"><p>如果你遇到特定的版面配置錯誤，可以參考<a href="/testing/common-errors">常見 Flutter 錯誤</a>。</div></aside><p>當學習 Flutter 的人問你，為什麼某個帶有 <code>width: 100</code> 的元件（Widget）不是 100 像素寬時，預設的答案通常是建議他們把該元件包在 <code>Center</code> 裡，對吧？<p><strong>請不要這麼做。</strong><p>如果你這麼做，他們會一次又一次地回來問你，為什麼某個 <code>FittedBox</code> 沒有效果、為什麼那個 <code>Column</code> 溢出了，或者 <code>IntrinsicWidth</code> 應該要做什麼。<p>你應該先告訴他們，Flutter 的版面配置（layout）和 HTML 版面配置非常不同（他們很可能是從 HTML 來的），然後讓他們牢記以下規則：</p><center><font size="+2"><b>Constraints（約束條件）向下傳遞，尺寸向上回報，父元件決定位置。</b></font></center><p>不了解這個規則，就無法真正理解 Flutter 的版面配置，因此 Flutter 開發者應該儘早學會這一點。<p>更詳細地說：<ul><li>一個元件（Widget）會從它的<strong>父元件</strong>獲取自己的 <strong>constraints（約束條件）</strong>。 一個 <em>constraint</em> 就是一組 4 個 double：最小與最大寬度，以及最小與最大高度。<li>然後，該元件會遍歷自己的 <strong>children（子元件）</strong> 清單。 它會逐一告訴每個子元件它們的 <strong>constraints（約束條件）</strong>（每個子元件的 constraints 可以不同），然後詢問每個子元件它想要多大。<li>接著，該元件會逐一定位自己的 <strong>children（子元件）</strong> （在 <code>x</code> 軸上為水平，<code>y</code> 軸上為垂直）。<li>最後，該元件會告訴父元件自己的 <strong>size（尺寸）</strong> （當然是在原本 constraints 範圍內）。</ul><p>舉例來說，假設一個組合元件內含一個 column 並有一些 padding，想要將兩個子元件以如下方式排列：</p><img src="/assets/images/docs/ui/layout/children.png" alt="視覺化版面配置"><p>協商過程大致如下：<p><strong>Widget</strong>：「嘿，父元件，我的 constraints（約束條件）是什麼？」<p><strong>父元件</strong>：「你的寬度必須介於 <code>0</code> 到 <code>300</code> 像素之間，高度介於 <code>0</code> 到 <code>85</code> 之間。」<p><strong>Widget</strong>：「嗯，既然我要有 <code>5</code> 像素的 padding，那我的子元件最多只能有 <code>290</code> 像素寬和 <code>75</code> 像素高。」<p><strong>Widget</strong>：「嘿，第一個子元件，你的寬度必須介於 <code>0</code> 到 <code>290</code> 像素，高度介於 <code>0</code> 到 <code>75</code> 之間。」<p><strong>第一個子元件</strong>：「OK，那我想要 <code>290</code> 像素寬、<code>20</code> 像素高。」<p><strong>Widget</strong>：「嗯，因為我要把第二個子元件放在第一個下面，所以只剩下 <code>55</code> 像素高度給第二個子元件。」<p><strong>Widget</strong>：「嘿，第二個子元件，你的寬度必須介於 <code>0</code> 到 <code>290</code> 之間，高度介於 <code>0</code> 到 <code>55</code> 之間。」<p><strong>第二個子元件</strong>：「OK，我想要 <code>140</code> 像素寬、<code>30</code> 像素高。」<p><strong>Widget</strong>：「很好。我的第一個子元件位置是 <code>x: 5</code> 和 <code>y: 5</code>，第二個子元件位置是 <code>x: 80</code> 和 <code>y: 25</code>。」<p><strong>Widget</strong>：「嘿，父元件，我決定我的尺寸是 <code>300</code> 像素寬、<code>60</code> 像素高。」<div class="header-wrapper"><h2 id="限制">限制</h2><a class="heading-link" href="#限制" aria-label="Link to '限制' section">#</a></div><p>Flutter 的版面配置引擎設計為單次傳遞（one-pass）流程。 這代表 Flutter 能非常有效率地進行元件（Widgets）版面配置，但也帶來一些限制：<ul><li><p>元件只能在父元件給定的 constraints（約束條件）內決定自己的尺寸。 這意味著元件通常 <strong>不能隨意設定任意尺寸</strong>。<li><p>元件<strong>無法得知也無法決定自己在螢幕上的位置</strong>，因為元件的位置是由父元件決定的。<li><p>由於父元件的尺寸與位置又取決於它自己的父元件，因此若不考慮整棵樹，無法精確定義任何元件的尺寸與位置。<li><p>如果子元件想要的尺寸與父元件不同，而父元件又沒有足夠資訊來對齊它，那麼子元件的尺寸可能會被忽略。 <strong>定義對齊時請具體明確。</strong></ul><p>在 Flutter 中，元件（Widgets）是由其底層的 <a href="https://api.flutter.dev/flutter/rendering/RenderBox-class.html"><code>RenderBox</code></a> 物件所渲染。Flutter 中許多 box，特別是只包含單一子元件的那些，會將自己的 constraint 傳遞給子元件。<p>一般來說，根據如何處理 constraints（約束條件），box 可分為三類：<ul><li>嘗試盡可能填滿空間的 box。 例如 <a href="https://api.flutter.dev/flutter/widgets/Center-class.html"><code>Center</code></a> 和 <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html"><code>ListView</code></a> 所用的 box。<li>嘗試和其子元件一樣大小的 box。 例如 <a href="https://api.flutter.dev/flutter/widgets/Transform-class.html"><code>Transform</code></a> 和 <a href="https://api.flutter.dev/flutter/widgets/Opacity-class.html"><code>Opacity</code></a> 所用的 box。<li>嘗試成為特定尺寸的 box。 例如 <a href="https://api.flutter.dev/flutter/dart-ui/Image-class.html"><code>Image</code></a> 和 <a href="https://api.flutter.dev/flutter/widgets/Text-class.html"><code>Text</code></a> 所用的 box。</ul><p>有些元件，例如 <a href="https://api.flutter.dev/flutter/widgets/Container-class.html"><code>Container</code></a>，會根據建構子的參數類型而有所不同。 <a href="https://api.flutter.dev/flutter/widgets/Container-class.html"><code>Container</code></a> 建構子預設會嘗試盡可能大，但如果你給它一個 <code>width</code>，它就會盡量符合該特定尺寸。<p>其他元件，例如 <a href="https://api.flutter.dev/flutter/widgets/Row-class.html"><code>Row</code></a> 和 <a href="https://api.flutter.dev/flutter/widgets/Column-class.html"><code>Column</code></a> (flex boxes)，則會根據給定的 constraints（約束條件）而有所不同，詳見 <a href="#flex">Flex</a> 章節。<div class="header-wrapper"><h2 id="範例">範例</h2><a class="heading-link" href="#範例" aria-label="Link to '範例' section">#</a></div><p>想要互動式體驗，請使用下方 DartPad。 利用編號的水平捲動條可以切換 29 個不同範例。<pre><code data-dartpad="true" data-embed="true" data-theme="dark" title="Constraints DartPad hands-on example" data-run="true">import 'package:flutter/material.dart';
+
+void main() => runApp(const HomePage());
+
+const red = Colors.red;
+const green = Colors.green;
+const blue = Colors.blue;
+const big = TextStyle(fontSize: 30);
+
+//////////////////////////////////////////////////
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const FlutterLayoutArticle([
+      Example1(),
+      Example2(),
+      Example3(),
+      Example4(),
+      Example5(),
+      Example6(),
+      Example7(),
+      Example8(),
+      Example9(),
+      Example10(),
+      Example11(),
+      Example12(),
+      Example13(),
+      Example14(),
+      Example15(),
+      Example16(),
+      Example17(),
+      Example18(),
+      Example19(),
+      Example20(),
+      Example21(),
+      Example22(),
+      Example23(),
+      Example24(),
+      Example25(),
+      Example26(),
+      Example27(),
+      Example28(),
+      Example29(),
+    ]);
+  }
+}
+
+//////////////////////////////////////////////////
+
+abstract class Example extends StatelessWidget {
+  const Example({super.key});
+
+  String get code;
+
+  String get explanation;
+}
+
+//////////////////////////////////////////////////
+
+class FlutterLayoutArticle extends StatefulWidget {
+  const FlutterLayoutArticle(this.examples, {super.key});
+
+  final List&lt;Example> examples;
+
+  @override
+  State&lt;FlutterLayoutArticle> createState() => _FlutterLayoutArticleState();
+}
+
+//////////////////////////////////////////////////
+
+class _FlutterLayoutArticleState extends State&lt;FlutterLayoutArticle> {
+  late int count;
+  late Widget example;
+  late String code;
+  late String explanation;
+
+  @override
+  void initState() {
+    count = 1;
+    code = const Example1().code;
+    explanation = const Example1().explanation;
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(FlutterLayoutArticle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    var example = widget.examples[count - 1];
+    code = example.code;
+    explanation = example.explanation;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Layout Article',
+      home: SafeArea(
+        child: Material(
+          color: Colors.black,
+          child: FittedBox(
+            child: Container(
+              width: 400,
+              height: 670,
+              color: const Color(0xFFCCCCCC),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints.tightFor(
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                      child: widget.examples[count - 1],
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: double.infinity,
+                    color: Colors.black,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (int i = 0; i &lt; widget.examples.length; i++)
+                            Container(
+                              width: 58,
+                              padding: const EdgeInsets.only(left: 4, right: 4),
+                              child: button(i + 1),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 273,
+                    color: Colors.grey[50],
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        key: ValueKey(count),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Center(child: Text(code)),
+                              const SizedBox(height: 15),
+                              Text(
+                                explanation,
+                                style: TextStyle(
+                                  color: Colors.blue[900],
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget button(int exampleNumber) {
+    return Button(
+      key: ValueKey('button$exampleNumber'),
+      isSelected: count == exampleNumber,
+      exampleNumber: exampleNumber,
+      onPressed: () {
+        showExample(
+          exampleNumber,
+          widget.examples[exampleNumber - 1].code,
+          widget.examples[exampleNumber - 1].explanation,
+        );
+      },
+    );
+  }
+
+  void showExample(int exampleNumber, String code, String explanation) {
+    setState(() {
+      count = exampleNumber;
+      this.code = code;
+      this.explanation = explanation;
+    });
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Button extends StatelessWidget {
+  final bool isSelected;
+  final int exampleNumber;
+  final VoidCallback onPressed;
+
+  const Button({
+    super.key,
+    required this.isSelected,
+    required this.exampleNumber,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: isSelected ? Colors.grey : Colors.grey[800],
+      ),
+      child: Text(exampleNumber.toString()),
+      onPressed: () {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOut,
+          alignment: 0.5,
+        );
+        onPressed();
+      },
+    );
+  }
+}
+//////////////////////////////////////////////////
+
+class Example1 extends Example {
+  const Example1({super.key});
+
+  @override
+  final code = 'Container(color: red)';
+
+  @override
+  final explanation =
+      'The screen is the parent of the Container, '
+      'and it forces the Container to be exactly the same size as the screen.'
+      '\n\n'
+      'So the Container fills the screen and paints it red.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(color: red);
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example2 extends Example {
+  const Example2({super.key});
+
+  @override
+  final code = 'Container(width: 100, height: 100, color: red)';
+  @override
+  final String explanation =
+      'The red Container wants to be 100x100, but it can\'t, '
+      'because the screen forces it to be exactly the same size as the screen.'
+      '\n\n'
+      'So the Container fills the screen.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: 100, height: 100, color: red);
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example3 extends Example {
+  const Example3({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: Container(width: 100, height: 100, color: red))';
+  @override
+  final String explanation =
+      'The screen forces the Center to be exactly the same size as the screen, '
+      'so the Center fills the screen.'
+      '\n\n'
+      'The Center tells the Container that it can be any size it wants, but not bigger than the screen.'
+      'Now the Container can indeed be 100x100.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Container(width: 100, height: 100, color: red));
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example4 extends Example {
+  const Example4({super.key});
+
+  @override
+  final code =
+      'Align(\n'
+      '   alignment: Alignment.bottomRight,\n'
+      '   child: Container(width: 100, height: 100, color: red))';
+  @override
+  final String explanation =
+      'This is different from the previous example in that it uses Align instead of Center.'
+      '\n\n'
+      'Align also tells the Container that it can be any size it wants, but if there is empty space it won\'t center the Container. '
+      'Instead, it aligns the Container to the bottom-right of the available space.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Container(width: 100, height: 100, color: red),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example5 extends Example {
+  const Example5({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: Container(\n'
+      '              color: red,\n'
+      '              width: double.infinity,\n'
+      '              height: double.infinity))';
+  @override
+  final String explanation =
+      'The screen forces the Center to be exactly the same size as the screen, '
+      'so the Center fills the screen.'
+      '\n\n'
+      'The Center tells the Container that it can be any size it wants, but not bigger than the screen.'
+      'The Container wants to be of infinite size, but since it can\'t be bigger than the screen, it just fills the screen.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: red,
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example6 extends Example {
+  const Example6({super.key});
+
+  @override
+  final code = 'Center(child: Container(color: red))';
+  @override
+  final String explanation =
+      'The screen forces the Center to be exactly the same size as the screen, '
+      'so the Center fills the screen.'
+      '\n\n'
+      'The Center tells the Container that it can be any size it wants, but not bigger than the screen.'
+      '\n\n'
+      'Since the Container has no child and no fixed size, it decides it wants to be as big as possible, so it fills the whole screen.'
+      '\n\n'
+      'But why does the Container decide that? '
+      'Simply because that\'s a design decision by those who created the Container widget. '
+      'It could have been created differently, and you have to read the Container documentation to understand how it behaves, depending on the circumstances. ';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Container(color: red));
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example7 extends Example {
+  const Example7({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: Container(color: red\n'
+      '      child: Container(color: green, width: 30, height: 30)))';
+  @override
+  final String explanation =
+      'The screen forces the Center to be exactly the same size as the screen, '
+      'so the Center fills the screen.'
+      '\n\n'
+      'The Center tells the red Container that it can be any size it wants, but not bigger than the screen.'
+      'Since the red Container has no size but has a child, it decides it wants to be the same size as its child.'
+      '\n\n'
+      'The red Container tells its child that it can be any size it wants, but not bigger than the screen.'
+      '\n\n'
+      'The child is a green Container that wants to be 30x30.'
+      '\n\n'
+      'Since the red `Container` has no size but has a child, it decides it wants to be the same size as its child. '
+      'The red color isn\'t visible, since the green Container entirely covers all of the red Container.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        color: red,
+        child: Container(color: green, width: 30, height: 30),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example8 extends Example {
+  const Example8({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: Container(color: red\n'
+      '      padding: const EdgeInsets.all(20),\n'
+      '      child: Container(color: green, width: 30, height: 30)))';
+  @override
+  final String explanation =
+      'The red Container sizes itself to its children size, but it takes its own padding into consideration. '
+      'So it is also 30x30 plus padding. '
+      'The red color is visible because of the padding, and the green Container has the same size as in the previous example.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        color: red,
+        child: Container(color: green, width: 30, height: 30),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example9 extends Example {
+  const Example9({super.key});
+
+  @override
+  final code =
+      'ConstrainedBox(\n'
+      '   constraints: BoxConstraints(\n'
+      '              minWidth: 70, minHeight: 70,\n'
+      '              maxWidth: 150, maxHeight: 150),\n'
+      '      child: Container(color: red, width: 10, height: 10)))';
+  @override
+  final String explanation =
+      'You might guess that the Container has to be between 70 and 150 pixels, but you would be wrong. '
+      'The ConstrainedBox only imposes ADDITIONAL constraints from those it receives from its parent.'
+      '\n\n'
+      'Here, the screen forces the ConstrainedBox to be exactly the same size as the screen, '
+      'so it tells its child Container to also assume the size of the screen, '
+      'thus ignoring its \'constraints\' parameter.';
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minWidth: 70,
+        minHeight: 70,
+        maxWidth: 150,
+        maxHeight: 150,
+      ),
+      child: Container(color: red, width: 10, height: 10),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example10 extends Example {
+  const Example10({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: ConstrainedBox(\n'
+      '      constraints: BoxConstraints(\n'
+      '                 minWidth: 70, minHeight: 70,\n'
+      '                 maxWidth: 150, maxHeight: 150),\n'
+      '        child: Container(color: red, width: 10, height: 10))))';
+  @override
+  final String explanation =
+      'Now, Center allows ConstrainedBox to be any size up to the screen size.'
+      '\n\n'
+      'The ConstrainedBox imposes ADDITIONAL constraints from its \'constraints\' parameter onto its child.'
+      '\n\n'
+      'The Container must be between 70 and 150 pixels. It wants to have 10 pixels, so it will end up having 70 (the MINIMUM).';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 70,
+          minHeight: 70,
+          maxWidth: 150,
+          maxHeight: 150,
+        ),
+        child: Container(color: red, width: 10, height: 10),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example11 extends Example {
+  const Example11({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: ConstrainedBox(\n'
+      '      constraints: BoxConstraints(\n'
+      '                 minWidth: 70, minHeight: 70,\n'
+      '                 maxWidth: 150, maxHeight: 150),\n'
+      '        child: Container(color: red, width: 1000, height: 1000))))';
+  @override
+  final String explanation =
+      'Center allows ConstrainedBox to be any size up to the screen size.'
+      'The ConstrainedBox imposes ADDITIONAL constraints from its \'constraints\' parameter onto its child'
+      '\n\n'
+      'The Container must be between 70 and 150 pixels. It wants to have 1000 pixels, so it ends up having 150 (the MAXIMUM).';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 70,
+          minHeight: 70,
+          maxWidth: 150,
+          maxHeight: 150,
+        ),
+        child: Container(color: red, width: 1000, height: 1000),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example12 extends Example {
+  const Example12({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: ConstrainedBox(\n'
+      '      constraints: BoxConstraints(\n'
+      '                 minWidth: 70, minHeight: 70,\n'
+      '                 maxWidth: 150, maxHeight: 150),\n'
+      '        child: Container(color: red, width: 100, height: 100))))';
+  @override
+  final String explanation =
+      'Center allows ConstrainedBox to be any size up to the screen size.'
+      'ConstrainedBox imposes ADDITIONAL constraints from its \'constraints\' parameter onto its child.'
+      '\n\n'
+      'The Container must be between 70 and 150 pixels. It wants to have 100 pixels, and that\'s the size it has, since that\'s between 70 and 150.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 70,
+          minHeight: 70,
+          maxWidth: 150,
+          maxHeight: 150,
+        ),
+        child: Container(color: red, width: 100, height: 100),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example13 extends Example {
+  const Example13({super.key});
+
+  @override
+  final code =
+      'UnconstrainedBox(\n'
+      '   child: Container(color: red, width: 20, height: 50));';
+  @override
+  final String explanation =
+      'The screen forces the UnconstrainedBox to be exactly the same size as the screen.'
+      'However, the UnconstrainedBox lets its child Container be any size it wants.';
+
+  @override
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: Container(color: red, width: 20, height: 50),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example14 extends Example {
+  const Example14({super.key});
+
+  @override
+  final code =
+      'UnconstrainedBox(\n'
+      '   child: Container(color: red, width: 4000, height: 50));';
+  @override
+  final String explanation =
+      'The screen forces the UnconstrainedBox to be exactly the same size as the screen, '
+      'and UnconstrainedBox lets its child Container be any size it wants.'
+      '\n\n'
+      'Unfortunately, in this case the Container has 4000 pixels of width and is too big to fit in the UnconstrainedBox, '
+      'so the UnconstrainedBox displays the much dreaded "overflow warning".';
+
+  @override
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: Container(color: red, width: 4000, height: 50),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example15 extends Example {
+  const Example15({super.key});
+
+  @override
+  final code =
+      'OverflowBox(\n'
+      '   minWidth: 0,'
+      '   minHeight: 0,'
+      '   maxWidth: double.infinity,'
+      '   maxHeight: double.infinity,'
+      '   child: Container(color: red, width: 4000, height: 50));';
+  @override
+  final String explanation =
+      'The screen forces the OverflowBox to be exactly the same size as the screen, '
+      'and OverflowBox lets its child Container be any size it wants.'
+      '\n\n'
+      'OverflowBox is similar to UnconstrainedBox, and the difference is that it won\'t display any warnings if the child doesn\'t fit the space.'
+      '\n\n'
+      'In this case the Container is 4000 pixels wide, and is too big to fit in the OverflowBox, '
+      'but the OverflowBox simply shows as much as it can, with no warnings given.';
+
+  @override
+  Widget build(BuildContext context) {
+    return OverflowBox(
+      minWidth: 0,
+      minHeight: 0,
+      maxWidth: double.infinity,
+      maxHeight: double.infinity,
+      child: Container(color: red, width: 4000, height: 50),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example16 extends Example {
+  const Example16({super.key});
+
+  @override
+  final code =
+      'UnconstrainedBox(\n'
+      '   child: Container(color: Colors.red, width: double.infinity, height: 100));';
+  @override
+  final String explanation =
+      'This won\'t render anything, and you\'ll see an error in the console.'
+      '\n\n'
+      'The UnconstrainedBox lets its child be any size it wants, '
+      'however its child is a Container with infinite size.'
+      '\n\n'
+      'Flutter can\'t render infinite sizes, so it throws an error with the following message: '
+      '"BoxConstraints forces an infinite width."';
+
+  @override
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: Container(color: Colors.red, width: double.infinity, height: 100),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example17 extends Example {
+  const Example17({super.key});
+
+  @override
+  final code =
+      'UnconstrainedBox(\n'
+      '   child: LimitedBox(maxWidth: 100,\n'
+      '      child: Container(color: Colors.red,\n'
+      '                       width: double.infinity, height: 100));';
+  @override
+  final String explanation =
+      'Here you won\'t get an error anymore, '
+      'because when the LimitedBox is given an infinite size by the UnconstrainedBox, '
+      'it passes a maximum width of 100 down to its child.'
+      '\n\n'
+      'If you swap the UnconstrainedBox for a Center widget, '
+      'the LimitedBox won\'t apply its limit anymore (since its limit is only applied when it gets infinite constraints), '
+      'and the width of the Container is allowed to grow past 100.'
+      '\n\n'
+      'This explains the difference between a LimitedBox and a ConstrainedBox.';
+
+  @override
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: LimitedBox(
+        maxWidth: 100,
+        child: Container(
+          color: Colors.red,
+          width: double.infinity,
+          height: 100,
+        ),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example18 extends Example {
+  const Example18({super.key});
+
+  @override
+  final code =
+      'FittedBox(\n'
+      '   child: Text(\'Some Example Text.\'));';
+  @override
+  final String explanation =
+      'The screen forces the FittedBox to be exactly the same size as the screen.'
+      'The Text has some natural width (also called its intrinsic width) that depends on the amount of text, its font size, and so on.'
+      '\n\n'
+      'The FittedBox lets the Text be any size it wants, '
+      'but after the Text tells its size to the FittedBox, '
+      'the FittedBox scales the Text until it fills all of the available width.';
+
+  @override
+  Widget build(BuildContext context) {
+    return const FittedBox(child: Text('Some Example Text.'));
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example19 extends Example {
+  const Example19({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: FittedBox(\n'
+      '      child: Text(\'Some Example Text.\')));';
+  @override
+  final String explanation =
+      'But what happens if you put the FittedBox inside of a Center widget? '
+      'The Center lets the FittedBox be any size it wants, up to the screen size.'
+      '\n\n'
+      'The FittedBox then sizes itself to the Text, and lets the Text be any size it wants.'
+      '\n\n'
+      'Since both FittedBox and the Text have the same size, no scaling happens.';
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: FittedBox(child: Text('Some Example Text.')));
+  }
+}
+
+////////////////////////////////////////////////////
+
+class Example20 extends Example {
+  const Example20({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: FittedBox(\n'
+      '      child: Text(\'…\')));';
+  @override
+  final String explanation =
+      'However, what happens if FittedBox is inside of a Center widget, but the Text is too large to fit the screen?'
+      '\n\n'
+      'FittedBox tries to size itself to the Text, but it can\'t be bigger than the screen. '
+      'It then assumes the screen size, and resizes Text so that it fits the screen, too.';
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: FittedBox(
+        child: Text(
+          'This is some very very very large text that is too big to fit a regular screen in a single line.',
+        ),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example21 extends Example {
+  const Example21({super.key});
+
+  @override
+  final code =
+      'Center(\n'
+      '   child: Text(\'…\'));';
+  @override
+  final String explanation =
+      'If, however, you remove the FittedBox, '
+      'the Text gets its maximum width from the screen, '
+      'and breaks the line so that it fits the screen.';
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'This is some very very very large text that is too big to fit a regular screen in a single line.',
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example22 extends Example {
+  const Example22({super.key});
+
+  @override
+  final code =
+      'FittedBox(\n'
+      '   child: Container(\n'
+      '      height: 20, width: double.infinity));';
+  @override
+  final String explanation =
+      'FittedBox can only scale a widget that is BOUNDED (has non-infinite width and height).'
+      'Otherwise, it won\'t render anything, and you\'ll see an error in the console.';
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      child: Container(height: 20, width: double.infinity, color: Colors.red),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example23 extends Example {
+  const Example23({super.key});
+
+  @override
+  final code =
+      'Row(children:[\n'
+      '   Container(color: red, child: Text(\'Hello!\'))\n'
+      '   Container(color: green, child: Text(\'Goodbye!\'))]';
+  @override
+  final String explanation =
+      'The screen forces the Row to be exactly the same size as the screen.'
+      '\n\n'
+      'Just like an UnconstrainedBox, the Row won\'t impose any constraints onto its children, '
+      'and instead lets them be any size they want.'
+      '\n\n'
+      'The Row then puts them side-by-side, and any extra space remains empty.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          color: red,
+          child: const Text('Hello!', style: big),
+        ),
+        Container(
+          color: green,
+          child: const Text('Goodbye!', style: big),
+        ),
+      ],
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example24 extends Example {
+  const Example24({super.key});
+
+  @override
+  final code =
+      'Row(children:[\n'
+      '   Container(color: red, child: Text(\'…\'))\n'
+      '   Container(color: green, child: Text(\'Goodbye!\'))]';
+  @override
+  final String explanation =
+      'Since the Row won\'t impose any constraints onto its children, '
+      'it\'s quite possible that the children might be too big to fit the available width of the Row.'
+      'In this case, just like an UnconstrainedBox, the Row displays the "overflow warning".';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          color: red,
+          child: const Text(
+            'This is a very long text that '
+            'won\'t fit the line.',
+            style: big,
+          ),
+        ),
+        Container(
+          color: green,
+          child: const Text('Goodbye!', style: big),
+        ),
+      ],
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example25 extends Example {
+  const Example25({super.key});
+
+  @override
+  final code =
+      'Row(children:[\n'
+      '   Expanded(\n'
+      '       child: Container(color: red, child: Text(\'…\')))\n'
+      '   Container(color: green, child: Text(\'Goodbye!\'))]';
+  @override
+  final String explanation =
+      'When a Row\'s child is wrapped in an Expanded widget, the Row won\'t let this child define its own width anymore.'
+      '\n\n'
+      'Instead, it defines the Expanded width according to the other children, and only then the Expanded widget forces the original child to have the Expanded\'s width.'
+      '\n\n'
+      'In other words, once you use Expanded, the original child\'s width becomes irrelevant, and is ignored.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Center(
+            child: Container(
+              color: red,
+              child: const Text(
+                'This is a very long text that won\'t fit the line.',
+                style: big,
+              ),
+            ),
+          ),
+        ),
+        Container(
+          color: green,
+          child: const Text('Goodbye!', style: big),
+        ),
+      ],
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example26 extends Example {
+  const Example26({super.key});
+
+  @override
+  final code =
+      'Row(children:[\n'
+      '   Expanded(\n'
+      '       child: Container(color: red, child: Text(\'…\')))\n'
+      '   Expanded(\n'
+      '       child: Container(color: green, child: Text(\'Goodbye!\'))]';
+  @override
+  final String explanation =
+      'If all of Row\'s children are wrapped in Expanded widgets, each Expanded has a size proportional to its flex parameter, '
+      'and only then each Expanded widget forces its child to have the Expanded\'s width.'
+      '\n\n'
+      'In other words, Expanded ignores the preferred width of its children.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            color: red,
+            child: const Text(
+              'This is a very long text that won\'t fit the line.',
+              style: big,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            color: green,
+            child: const Text('Goodbye!', style: big),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example27 extends Example {
+  const Example27({super.key});
+
+  @override
+  final code =
+      'Row(children:[\n'
+      '   Flexible(\n'
+      '       child: Container(color: red, child: Text(\'…\')))\n'
+      '   Flexible(\n'
+      '       child: Container(color: green, child: Text(\'Goodbye!\'))]';
+  @override
+  final String explanation =
+      'The only difference if you use Flexible instead of Expanded, '
+      'is that Flexible lets its child be SMALLER than the Flexible width, '
+      'while Expanded forces its child to have the same width of the Expanded.'
+      '\n\n'
+      'But both Expanded and Flexible ignore their children\'s width when sizing themselves.'
+      '\n\n'
+      'This means that it\'s IMPOSSIBLE to expand Row children proportionally to their sizes. '
+      'The Row either uses the exact child\'s width, or ignores it completely when you use Expanded or Flexible.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          child: Container(
+            color: red,
+            child: const Text(
+              'This is a very long text that won\'t fit the line.',
+              style: big,
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            color: green,
+            child: const Text('Goodbye!', style: big),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example28 extends Example {
+  const Example28({super.key});
+
+  @override
+  final code =
+      'Scaffold(\n'
+      '   body: Container(color: blue,\n'
+      '   child: Column(\n'
+      '      children: [\n'
+      '         Text(\'Hello!\'),\n'
+      '         Text(\'Goodbye!\')])))';
+
+  @override
+  final String explanation =
+      'The screen forces the Scaffold to be exactly the same size as the screen, '
+      'so the Scaffold fills the screen.'
+      '\n\n'
+      'The Scaffold tells the Container that it can be any size it wants, but not bigger than the screen.'
+      '\n\n'
+      'When a widget tells its child that it can be smaller than a certain size, '
+      'we say the widget supplies "loose" constraints to its child. More on that later.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: blue,
+        child: const Column(children: [Text('Hello!'), Text('Goodbye!')]),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+
+class Example29 extends Example {
+  const Example29({super.key});
+
+  @override
+  final code =
+      'Scaffold(\n'
+      '   body: Container(color: blue,\n'
+      '   child: SizedBox.expand(\n'
+      '      child: Column(\n'
+      '         children: [\n'
+      '            Text(\'Hello!\'),\n'
+      '            Text(\'Goodbye!\')]))))';
+
+  @override
+  final String explanation =
+      'If you want the Scaffold\'s child to be exactly the same size as the Scaffold itself, '
+      'you can wrap its child with SizedBox.expand.'
+      '\n\n'
+      'When a widget tells its child that it must be of a certain size, '
+      'we say the widget supplies "tight" constraints to its child. More on that later.';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SizedBox.expand(
+        child: Container(
+          color: blue,
+          child: const Column(children: [Text('Hello!'), Text('Goodbye!')]),
+        ),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////
+</code></pre><p>如果你願意，也可以從 <a href="https://github.com/marcglasberg/flutter_layout_article">這個 GitHub 儲存庫</a> 取得程式碼。<p>這些範例會在接下來的章節中進行說明。<div class="header-wrapper"><h3 id="範例-1">範例 1</h3><a class="heading-link" href="#範例-1" aria-label="Link to '範例 1' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-1.png" alt="範例 1 版面配置"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red)</span></span></code></pre></div></div><p>螢幕是<code>Container</code>的父層，並且 強制<code>Container</code>的尺寸必須與螢幕完全相同。<p>因此，<code>Container</code>會填滿整個螢幕，並將其繪製為紅色。<div class="header-wrapper"><h3 id="範例-2">範例 2</h3><a class="heading-link" href="#範例-2" aria-label="Link to '範例 2' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-2.png" alt="Example 2 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red)</span></span></code></pre></div></div><p>紅色的 <code>Container</code> 想要成為 100 × 100， 但它無法達成，因為螢幕強制它必須 與螢幕完全相同的大小。<p>因此，<code>Container</code> 會填滿整個螢幕。<div class="header-wrapper"><h3 id="範例-3">範例 3</h3><a class="heading-link" href="#範例-3" aria-label="Link to '範例 3' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-3.png" alt="Example 3 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red))</span></span></code></pre></div></div><p>螢幕會強制讓<code>Center</code>的尺寸與螢幕完全相同，因此<code>Center</code>會填滿整個螢幕。<p><code>Center</code>告訴<code>Container</code>它可以是任何想要的大小，但不能超過螢幕的大小。現在<code>Container</code>確實可以是 100 × 100。<div class="header-wrapper"><h3 id="範例-4">範例 4</h3><a class="heading-link" href="#範例-4" aria-label="Link to '範例 4' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-4.png" alt="Example 4 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Align</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  alignment</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Alignment</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.bottomRight,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>這個範例與前一個不同之處在於它使用了<code>Align</code>，而不是<code>Center</code>。<p><code>Align</code> 同樣告訴 <code>Container</code> 可以是任意大小，但如果有多餘的空間，它不會將 <code>Container</code> 置中。相反地，它會將容器對齊到可用空間的右下角。<div class="header-wrapper"><h3 id="範例-5">範例 5</h3><a class="heading-link" href="#範例-5" aria-label="Link to '範例 5' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-5.png" alt="Example 5 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制<code>Center</code>的大小必須與螢幕完全相同，因此<code>Center</code>會填滿整個螢幕。<p><code>Center</code>告訴<code>Container</code>它可以是任何想要的大小，但不能超過螢幕的大小。<code>Container</code>希望自己是無限大，但因為不能比螢幕大，所以它就填滿了螢幕。<div class="header-wrapper"><h3 id="範例-6">範例 6</h3><a class="heading-link" href="#範例-6" aria-label="Link to '範例 6' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-6.png" alt="Example 6 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red))</span></span></code></pre></div></div><p>螢幕會強制<code>Center</code>與螢幕本身的大小完全相同，因此<code>Center</code>會填滿整個螢幕。<p><code>Center</code>告訴<code>Container</code>它可以是任何想要的大小，但不能超過螢幕的尺寸。由於<code>Container</code>沒有子元件（child）且沒有固定大小，因此它決定要盡可能大，所以會填滿整個螢幕。<p>但為什麼<code>Container</code>會這麼決定呢？ 這純粹是<code>Container</code>元件（Widget）設計者的設計決策。它本來也可以有不同的設計方式，因此你必須閱讀<a href="https://api.flutter.dev/flutter/widgets/Container-class.html"><code>Container</code></a> API 文件，才能根據不同情境了解它的行為。<div class="header-wrapper"><h3 id="範例-7">範例 7</h3><a class="heading-link" href="#範例-7" aria-label="Link to '範例 7' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-7.png" alt="Example 7 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 30</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 30</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制 <code>Center</code> 的大小必須與螢幕完全相同，因此 <code>Center</code> 會填滿整個螢幕。<p><code>Center</code> 告訴紅色的 <code>Container</code>，它可以是任何想要的大小，但不能超過螢幕的尺寸。由於紅色的 <code>Container</code> 沒有自己的大小，但有一個子元件（child），所以它決定要和它的子元件一樣大。<p>紅色的 <code>Container</code> 告訴它的子元件可以是任何想要的大小，但不能超過螢幕。<p>這個子元件是一個綠色的 <code>Container</code>，它希望自己是 30 × 30。由於紅色的 <code>Container</code> 會將自己調整為與子元件一樣的大小，因此它的尺寸也是 30 × 30。紅色的顏色看不到，因為綠色的 <code>Container</code> 完全覆蓋了紅色的 <code>Container</code>。<div class="header-wrapper"><h3 id="範例-8">範例 8</h3><a class="heading-link" href="#範例-8" aria-label="Link to '範例 8' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-8.png" alt="Example 8 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    padding</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> EdgeInsets</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.</span><span style="color:#6200EE;--shiki-dark:#B581FF">all</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">20</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 30</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 30</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>紅色的 <code>Container</code> 會根據其子元件（children）的大小自我調整尺寸， 但同時也會考慮到自身的 padding（內距）。 因此，它的尺寸為 30 × 30 再加上 padding。 由於有 padding，紅色區域會顯示出來， 而綠色的 <code>Container</code> 則與前一個範例中的尺寸相同。<div class="header-wrapper"><h3 id="範例-9">範例 9</h3><a class="heading-link" href="#範例-9" aria-label="Link to '範例 9' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-9.png" alt="Example 9 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">ConstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  constraints</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> BoxConstraints</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    minWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    minHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    maxHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 10</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 10</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>你可能會猜測<code>Container</code>必須介於 70 到 150 像素之間，但這其實是錯誤的。 <code>ConstrainedBox</code>只會在它從父元件（Widget）接收到的限制上，<strong>額外</strong>加上自己的限制。<p>在這裡，螢幕（screen）強制<code>ConstrainedBox</code>必須與螢幕大小完全相同，因此它會告訴其子元件<code>Container</code>也要採用螢幕的大小，這樣就會忽略它的<code>constraints</code>參數。<div class="header-wrapper"><h3 id="範例-10">範例 10</h3><a class="heading-link" href="#範例-10" aria-label="Link to '範例 10' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-10.png" alt="Example 10 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> ConstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    constraints</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> BoxConstraints</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 10</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 10</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>現在，<code>Center</code> 允許 <code>ConstrainedBox</code> 的尺寸可以是任意大小，最大不超過螢幕大小。<code>ConstrainedBox</code> 會根據其 <code>constraints</code> 參數，對其子元件施加<strong>額外</strong>的限制。<p>這個 Container 必須介於 70 到 150 像素之間。它希望自己只有 10 像素，因此最後會被限制為 70（最小值）。<div class="header-wrapper"><h3 id="範例-11">範例 11</h3><a class="heading-link" href="#範例-11" aria-label="Link to '範例 11' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-11.png" alt="範例 11 版面配置"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> ConstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    constraints</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> BoxConstraints</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 1000</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 1000</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p><code>Center</code> 允許 <code>ConstrainedBox</code> 的尺寸可以在螢幕大小以內的任意範圍。<code>ConstrainedBox</code> 會根據其 <code>constraints</code> 參數對其子元件施加<strong>額外</strong>的限制。<p><code>Container</code> 必須介於 70 到 150 像素之間。 它希望有 1000 像素， 但最終會是 150（最大值）。<div class="header-wrapper"><h3 id="範例-12">範例 12</h3><a class="heading-link" href="#範例-12" aria-label="Link to '範例 12' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-12.png" alt="Example 12 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> ConstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    constraints</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> BoxConstraints</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      minHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 70</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      maxHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 150</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p><code>Center</code> 允許 <code>ConstrainedBox</code> 的尺寸可以在螢幕大小以內的任何範圍。<code>ConstrainedBox</code> 會根據其 <code>constraints</code> 參數，對其子元件施加<strong>額外</strong>的限制。<p><code>Container</code> 必須介於 70 到 150 像素之間。它希望有 100 像素，因此實際尺寸就是 100 像素，因為這個值介於 70 和 150 之間。<div class="header-wrapper"><h3 id="範例-13">範例 13</h3><a class="heading-link" href="#範例-13" aria-label="Link to '範例 13' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-13.png" alt="Example 13 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">UnconstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 20</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 50</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制 <code>UnconstrainedBox</code> 的大小 與螢幕完全相同。然而，<code>UnconstrainedBox</code> 則允許其子元件 <code>Container</code> 擁有任意大小。<div class="header-wrapper"><h3 id="範例-14">範例 14</h3><a class="heading-link" href="#範例-14" aria-label="Link to '範例 14' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-14.png" alt="Example 14 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">UnconstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 4000</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 50</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制<code>UnconstrainedBox</code>的大小 必須與螢幕完全相同，而<code>UnconstrainedBox</code> 則允許其子元件<code>Container</code>可以是任何它想要的大小。<p>不幸的是，在這個例子中，<code>Container</code> 寬度為 4000 像素，太大而無法容納在<code>UnconstrainedBox</code>內， 因此<code>UnconstrainedBox</code>顯示了令人頭痛的「溢出警告」。<div class="header-wrapper"><h3 id="範例-15">範例 15</h3><a class="heading-link" href="#範例-15" aria-label="Link to '範例 15' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-15.png" alt="Example 15 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">OverflowBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  minWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 0</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  minHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 0</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  maxHeight</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 4000</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 50</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制 <code>OverflowBox</code> 的大小與螢幕完全相同，而 <code>OverflowBox</code> 則允許其子元件 <code>Container</code> 可以是任何想要的大小。<p><code>OverflowBox</code> 與 <code>UnconstrainedBox</code> 類似；不同之處在於，如果子元件無法適應空間，<code>OverflowBox</code> 不會顯示任何警告。<p>在這個例子中，<code>Container</code> 的寬度為 4000 像素，太大無法放入 <code>OverflowBox</code>，但 <code>OverflowBox</code> 只會顯示能顯示的部分，不會出現任何警告。<div class="header-wrapper"><h3 id="範例-16">範例 16</h3><a class="heading-link" href="#範例-16" aria-label="Link to '範例 16' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-16.png" alt="Example 16 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">UnconstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Colors</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.red, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity, height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>這段程式碼不會渲染任何內容，並且你會在主控台看到錯誤訊息。<p><code>UnconstrainedBox</code> 允許其子元件（child）擁有任意大小， 但它的子元件是一個具有無限大小的 <code>Container</code>。<p>Flutter 無法渲染無限大小，因此會拋出錯誤， 並顯示以下訊息：<code>BoxConstraints forces an infinite width.</code><div class="header-wrapper"><h3 id="範例-17">範例 17</h3><a class="heading-link" href="#範例-17" aria-label="Link to '範例 17' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-17.png" alt="Example 17 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">UnconstrainedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> LimitedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    maxWidth</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Colors</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 100</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>這裡你將不會再遇到錯誤， 因為當 <code>LimitedBox</code> 被 <code>UnconstrainedBox</code> 給予無限大小時； 它會將最大寬度 100 向下傳遞給其子元件。<p>如果你將 <code>UnconstrainedBox</code> 換成 <code>Center</code> 元件（Widget）， <code>LimitedBox</code> 就不會再套用其限制 （因為它的限制只會在收到無限約束時才會生效），而 <code>Container</code> 的寬度就可以超過 100。<p>這說明了 <code>LimitedBox</code> 和 <code>ConstrainedBox</code> 之間的差異。<div class="header-wrapper"><h3 id="範例-18">範例 18</h3><a class="heading-link" href="#範例-18" aria-label="Link to '範例 18' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-18.png" alt="Example 18 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#BD2314;--shiki-dark:#FF897E">const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> FittedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Some Example Text.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">))</span></span></code></pre></div></div><p>螢幕會強制<code>FittedBox</code>的尺寸與螢幕完全相同。<code>Text</code>有其自然寬度（也稱為其本質寬度，intrinsic width），這取決於文字的長度、字型大小等等。<p><code>FittedBox</code>允許<code>Text</code>可以是任何想要的尺寸，但在<code>Text</code>將其尺寸回報給<code>FittedBox</code>之後，<code>FittedBox</code>會將 Text 放大，直到填滿所有可用的寬度為止。<div class="header-wrapper"><h3 id="範例-19">範例 19</h3><a class="heading-link" href="#範例-19" aria-label="Link to '範例 19' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-19.png" alt="Example 19 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#BD2314;--shiki-dark:#FF897E">const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> FittedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Some Example Text.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">)))</span></span></code></pre></div></div><p>但是，如果你將<code>FittedBox</code>放在<code>Center</code>元件（Widget）裡會發生什麼事呢？<code>Center</code>會讓<code>FittedBox</code>可以根據自己的需求設定任何大小，只要不超過螢幕的尺寸。<p>接著，<code>FittedBox</code>會根據<code>Text</code>來決定自身大小，並讓<code>Text</code>可以自由設定所需的尺寸。 由於<code>FittedBox</code>和<code>Text</code>的大小相同，因此不會發生縮放。<div class="header-wrapper"><h3 id="範例-20">範例 20</h3><a class="heading-link" href="#範例-20" aria-label="Link to '範例 20' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-20.png" alt="Example 20 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#BD2314;--shiki-dark:#FF897E">const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> FittedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">      'This is some very very very large text that is too big to fit a regular screen in a single line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>然而，如果<code>FittedBox</code>位於<code>Center</code>元件（Widget）內部，但<code>Text</code>太大，無法容納在螢幕上時，會發生什麼情況呢？<p><code>FittedBox</code>會嘗試將自身尺寸設為<code>Text</code>， 但它不能比螢幕還大。 因此，它會假設螢幕大小， 並將<code>Text</code>的尺寸調整為也能適應螢幕。<div class="header-wrapper"><h3 id="範例-21">範例 21</h3><a class="heading-link" href="#範例-21" aria-label="Link to '範例 21' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-21.png" alt="Example 21 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#BD2314;--shiki-dark:#FF897E">const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">    'This is some very very very large text that is too big to fit a regular screen in a single line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>然而，如果你移除了<code>FittedBox</code>，則<code>Text</code> 會從螢幕取得其最大寬度， 並自動換行以符合螢幕的顯示範圍。<div class="header-wrapper"><h3 id="範例-22">範例 22</h3><a class="heading-link" href="#範例-22" aria-label="Link to '範例 22' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-22.png" alt="Example 22 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">FittedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(height</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#0C7064;--shiki-dark:#1CDAC5"> 20</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, width</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> double</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.infinity, color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Colors</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.red),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p><code>FittedBox</code> 只能縮放具有邊界（即寬度和高度都不是無限大）的元件（Widget）。否則，它將不會渲染任何內容，並且你會在主控台看到錯誤訊息。<div class="header-wrapper"><h3 id="範例-23">範例 23</h3><a class="heading-link" href="#範例-23" aria-label="Link to '範例 23' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-23.png" alt="Example 23 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Row</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Hello!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ],</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制將<code>Row</code>的尺寸設為與螢幕完全相同。<p>就像<code>UnconstrainedBox</code>一樣，<code>Row</code>不會對其子元件（children）施加任何限制，而是讓它們可以有任何想要的尺寸。<code>Row</code>則會將它們並排放置，任何多餘的空間則保持為空。<div class="header-wrapper"><h3 id="範例-24">範例 24</h3><a class="heading-link" href="#範例-24" aria-label="Link to '範例 24' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-24.png" alt="Example 24 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Row</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">        'This is a very long text that '</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">        'won</span><span style="color:#191C22;--shiki-dark:#E1E2EC">\'</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">t fit the line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ],</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>由於<code>Row</code>不會對其子元件施加任何限制，因此這些子元件很有可能會超出<code>Row</code>的可用寬度。在這種情況下，就像<code>UnconstrainedBox</code>一樣，<code>Row</code>會顯示「溢出警告」。<div class="header-wrapper"><h3 id="範例-25">範例 25</h3><a class="heading-link" href="#範例-25" aria-label="Link to '範例 25' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-25.png" alt="Example 25 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Row</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Expanded</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Center</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">          color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">          child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">            'This is a very long text that won</span><span style="color:#191C22;--shiki-dark:#E1E2EC">\'</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">t fit the line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">            style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">          ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ],</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>當<code>Row</code>的子元件（child）被包裹在<code>Expanded</code>元件（Widget）中時， <code>Row</code>將不再允許這個子元件自行決定其寬度。<p>取而代之的是，它會根據其他子元件來決定<code>Expanded</code>的寬度， 然後<code>Expanded</code>元件會強制原本的子元件擁有<code>Expanded</code>的寬度。<p>換句話說，一旦你使用<code>Expanded</code>， 原本子元件的寬度就變得無關緊要，並且會被忽略。<div class="header-wrapper"><h3 id="範例-26">範例 26</h3><a class="heading-link" href="#範例-26" aria-label="Link to '範例 26' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-26.png" alt="Example 26 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Row</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Expanded</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">          'This is a very long text that won</span><span style="color:#191C22;--shiki-dark:#E1E2EC">\'</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">t fit the line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">          style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Expanded</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ],</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>如果所有 <code>Row</code> 的子元件（children）都包裹在 <code>Expanded</code> 元件（Widgets）中， 每個 <code>Expanded</code> 會根據其 flex 參數，取得與之成比例的大小， 然後每個 <code>Expanded</code> 元件會強制其子元件擁有 <code>Expanded</code> 的寬度。<p>換句話說，<code>Expanded</code> 會忽略其子元件的偏好寬度。<div class="header-wrapper"><h3 id="範例-27">範例 27</h3><a class="heading-link" href="#範例-27" aria-label="Link to '範例 27' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-27.png" alt="Example 27 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Row</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Flexible</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> red,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#0C7064;--shiki-dark:#1CDAC5">          'This is a very long text that won</span><span style="color:#191C22;--shiki-dark:#E1E2EC">\'</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">t fit the line.'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">          style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">    Flexible</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> green,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">        child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">, style</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> big),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ],</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>如果你使用<code>Flexible</code> 取代 <code>Expanded</code>，唯一的差別在於，<code>Flexible</code> 允許其子元件（child）擁有與 <code>Flexible</code> 本身相同或更小的寬度，而 <code>Expanded</code> 則強制其子元件必須具有與 <code>Expanded</code> 完全相同的寬度。不過，<code>Expanded</code> 和 <code>Flexible</code> 在決定自身尺寸時，會忽略其子元件的寬度。<aside class="alert alert-info"><div class="alert-header"><i class="material-symbols" aria-hidden="true" translate="no">info</i> <span>Note</span></div><div class="alert-content"><p>這代表無法根據子元件的大小，按比例擴展 <code>Row</code> 的子元件。<code>Row</code> 不是完全採用子元件的寬度，就是在你使用 <code>Expanded</code> 或 <code>Flexible</code> 時完全忽略它。</div></aside><div class="header-wrapper"><h3 id="範例-28">範例 28</h3><a class="heading-link" href="#範例-28" aria-label="Link to '範例 28' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-28.png" alt="Example 28 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Scaffold</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  body</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> blue,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Column</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span><span style="color:#146BCD;--shiki-dark:#6BB1FF">Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Hello!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">), </span><span style="color:#146BCD;--shiki-dark:#6BB1FF">Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">)]),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>螢幕會強制將<code>Scaffold</code>設為與螢幕完全相同的大小，因此<code>Scaffold</code>會填滿整個螢幕。 <code>Scaffold</code>則告訴<code>Container</code>它可以是任何想要的大小，但不能超過螢幕的尺寸。<aside class="alert alert-info"><div class="alert-header"><i class="material-symbols" aria-hidden="true" translate="no">info</i> <span>Note</span></div><div class="alert-content"><p>當某個元件（Widget）告訴其子元件可以小於某個特定尺寸時，我們稱這個元件對其子元件提供了「寬鬆（loose）」的限制條件（constraints）。後面會有更詳細的說明。</div></aside><div class="header-wrapper"><h3 id="範例-29">範例 29</h3><a class="heading-link" href="#範例-29" aria-label="Link to '範例 29' section">#</a></div><img src="/assets/images/docs/ui/layout/layout-29.png" alt="Example 29 layout"><div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">Scaffold</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  body</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> SizedBox</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.</span><span style="color:#6200EE;--shiki-dark:#B581FF">expand</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Container</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      color</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> blue,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">      child</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#BD2314;--shiki-dark:#FF897E"> const</span><span style="color:#146BCD;--shiki-dark:#6BB1FF"> Column</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(children</span><span style="color:#191C22;--shiki-dark:#E1E2EC">:</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> [</span><span style="color:#146BCD;--shiki-dark:#6BB1FF">Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Hello!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">), </span><span style="color:#146BCD;--shiki-dark:#6BB1FF">Text</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#0C7064;--shiki-dark:#1CDAC5">'Goodbye!'</span><span style="color:#191C22;--shiki-dark:#DCDCDC">)]),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">    ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">  ),</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">)</span></span></code></pre></div></div><p>如果你希望<code>Scaffold</code>的子元件（child）與<code>Scaffold</code>本身完全相同大小，可以將其子元件包裹在<code>SizedBox.expand</code>中。<div class="header-wrapper"><h2 id="緊約束tight與寬鬆約束loose-constraints">緊約束（Tight）與寬鬆約束（Loose constraints）</h2><a class="heading-link" href="#緊約束tight與寬鬆約束loose-constraints" aria-label="Link to '緊約束（Tight）與寬鬆約束（Loose constraints）' section">#</a></div><p>你可能常聽到某個約束是「緊的」（tight）或「寬鬆的」（loose），那這到底是什麼意思呢？<div class="header-wrapper"><h3 id="緊約束tight-constraints">緊約束（Tight constraints）</h3><a class="heading-link" href="#緊約束tight-constraints" aria-label="Link to '緊約束（Tight constraints）' section">#</a></div><p><em>緊約束</em> 只提供一種可能性，也就是一個精確的尺寸。換句話說，緊約束的最大寬度等於最小寬度，最大高度也等於最小高度。<p>舉例來說，<code>App</code>元件（Widget）就是這樣的例子，它被 <a href="https://api.flutter.dev/flutter/rendering/RenderView-class.html"><code>RenderView</code></a> 類別所包含：應用程式的 <a href="https://api.flutter.dev/flutter/widgets/State/build.html"><code>build</code></a> 函式所回傳的子元件所使用的方塊（box），會被給予一個約束，強制它完全填滿應用程式的內容區域（通常是整個螢幕）。<p>另一個例子是：如果你在應用程式的 render tree 根部，將一堆方塊（box）彼此巢狀包裹，它們都會被緊約束強制，完全貼合彼此。<p>如果你打開 Flutter 的<code>box.dart</code>檔案並搜尋<code>BoxConstraints</code>建構函式，你會找到以下內容：<div class="code-block-wrapper language-dart"><div class="code-block-body"><span class="code-block-language" title="Language dart">dart</span><pre class="dash-dark dash-light shiki shiki-themes" tabindex="0"><code><span class="line"><span style="color:#146BCD;--shiki-dark:#6BB1FF">BoxConstraints</span><span style="color:#191C22;--shiki-dark:#DCDCDC">.</span><span style="color:#6200EE;--shiki-dark:#B581FF">tight</span><span style="color:#191C22;--shiki-dark:#DCDCDC">(</span><span style="color:#146BCD;--shiki-dark:#6BB1FF">Size</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> size)</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#E1E2EC">   :</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> minWidth </span><span style="color:#191C22;--shiki-dark:#E1E2EC">=</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> size.width,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">     maxWidth </span><span style="color:#191C22;--shiki-dark:#E1E2EC">=</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> size.width,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">     minHeight </span><span style="color:#191C22;--shiki-dark:#E1E2EC">=</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> size.height,</span></span>
+<span class="line"><span style="color:#191C22;--shiki-dark:#DCDCDC">     maxHeight </span><span style="color:#191C22;--shiki-dark:#E1E2EC">=</span><span style="color:#191C22;--shiki-dark:#DCDCDC"> size.height;</span></span></code></pre></div></div><p>如果你再次查看 <a href="#%E7%AF%84%E4%BE%8B-2">範例 2</a>， 螢幕會強制紅色的 <code>Container</code> 與螢幕的尺寸完全相同。 螢幕之所以能做到這一點，當然是因為它將緊約束（tight constraints） 傳遞給了 <code>Container</code>。<div class="header-wrapper"><h3 id="寬鬆約束loose-constraints">寬鬆約束（Loose constraints）</h3><a class="heading-link" href="#寬鬆約束loose-constraints" aria-label="Link to '寬鬆約束（Loose constraints）' section">#</a></div><p><em>寬鬆約束</em> 指的是最小值為零且最大值為非零的約束。<p>有些盒子（box）會_放寬_傳入的約束， 也就是保留最大值，但移除最小值， 因此元件可以擁有<strong>最小</strong>寬度和高度都等於<strong>零</strong>。<p>最終，<code>Center</code> 的目的是將它從父元件（螢幕）收到的緊約束 轉換成給它子元件（<code>Container</code>）的寬鬆約束。<p>如果你再次查看 <a href="#%E7%AF%84%E4%BE%8B-3">範例 3</a>， <code>Center</code> 允許紅色的 <code>Container</code> 變小， 但不能比螢幕大。<p><a id="unbounded"></a><div class="header-wrapper"><h2 id="無界約束unbounded-constraints">無界約束（Unbounded constraints）</h2><a class="heading-link" href="#無界約束unbounded-constraints" aria-label="Link to '無界約束（Unbounded constraints）' section">#</a></div><aside class="alert alert-info"><div class="alert-header"><i class="material-symbols" aria-hidden="true" translate="no">info</i> <span>Note</span></div><div class="alert-content"><p>如果框架偵測到與盒子約束有關的問題， 你可能會被導向到這裡。 下方的 <code>Flex</code> 章節也可能適用。</div></aside><p>在某些情況下， 盒子的約束是_無界_的，或稱為無限大。 這表示最大寬度或最大高度被設為 <a href="https://api.flutter.dev/flutter/dart-core/double/infinity-constant.html"><code>double.infinity</code></a>。<p>當一個盒子試圖盡可能變大時， 如果給它無界約束，它將無法正常運作， 並且在除錯模式下會拋出例外。<p>最常見的情況是， 渲染盒子（render box）在彈性盒子（flex box） （<a href="https://api.flutter.dev/flutter/widgets/Row-class.html"><code>Row</code></a> 或 <a href="https://api.flutter.dev/flutter/widgets/Column-class.html"><code>Column</code></a>） 以及<strong>在可滾動區域內</strong> （例如 <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html"><code>ListView</code></a> 及其他 <a href="https://api.flutter.dev/flutter/widgets/ScrollView-class.html"><code>ScrollView</code></a> 子類別）時， 會遇到無界約束。<p>舉例來說，<a href="https://api.flutter.dev/flutter/widgets/ListView-class.html"><code>ListView</code></a> 會嘗試在交叉方向（cross-direction）上展開以適應可用空間 （也許它是一個垂直滾動的區塊，並嘗試與父元件一樣寬）。 如果你將一個垂直滾動的 <a href="https://api.flutter.dev/flutter/widgets/ListView-class.html"><code>ListView</code></a> 巢狀在一個水平滾動的 <code>ListView</code> 內， 內層清單會嘗試變得盡可能寬， 而這個寬度是無限大， 因為外層在那個方向上是可滾動的。<p>下一節會說明你在 <code>Flex</code> 元件遇到無界約束時 可能會遇到的錯誤。<div class="header-wrapper"><h2 id="flex">Flex</h2><a class="heading-link" href="#flex" aria-label="Link to 'Flex' section">#</a></div><p>彈性盒子（flex box）（<a href="https://api.flutter.dev/flutter/widgets/Row-class.html"><code>Row</code></a> 和 <a href="https://api.flutter.dev/flutter/widgets/Column-class.html"><code>Column</code></a>） 在其主方向（primary direction）上的約束 是有界還是無界時，行為會有所不同。<p>如果彈性盒子的主方向約束是有界的， 它會嘗試變得盡可能大。<p>如果彈性盒子的主方向約束是無界的， 它會嘗試讓其子元件適應該空間。 每個子元件的 <code>flex</code> 值必須設為零， 也就是說，當彈性盒子位於另一個彈性盒子 或可滾動元件內時，不能使用 <a href="https://api.flutter.dev/flutter/widgets/Expanded-class.html"><code>Expanded</code></a>； 否則會拋出例外。<p><em>交叉方向</em>（cross direction） （<a href="https://api.flutter.dev/flutter/widgets/Column-class.html"><code>Column</code></a> 的寬度或 <a href="https://api.flutter.dev/flutter/widgets/Row-class.html"><code>Row</code></a> 的高度）， <strong>絕對不能</strong>是無界的， 否則無法合理地對齊其子元件。<div class="header-wrapper"><h2 id="學習特定元件的版面配置規則">學習特定元件的版面配置規則</h2><a class="heading-link" href="#學習特定元件的版面配置規則" aria-label="Link to '學習特定元件的版面配置規則' section">#</a></div><p>了解一般的版面配置規則是必要的，但這還不夠。<p>每個元件在套用一般規則時都有很大的自由度， 所以光看元件名稱，無法知道它的實際行為。<p>如果你嘗試猜測，很可能會猜錯。 除非你讀過它的文件，或研究過它的原始碼， 否則你無法確切知道一個元件的行為。<p>版面配置的原始碼通常很複雜， 所以閱讀文件可能會更好。 不過，如果你決定要研究版面配置的原始碼， 可以利用 IDE 的導覽功能輕鬆找到。<p>以下是一個範例：<ul><li><p>在你的程式碼中找到一個 <code>Column</code>，並導覽到它的 原始碼。你可以在 Android Studio 或 IntelliJ 中使用 <code>command+B</code>（macOS） 或 <code>control+B</code>（Windows/Linux）來達成。 你會被帶到 <code>basic.dart</code> 檔案。 由於 <code>Column</code> 繼承自 <code>Flex</code>，請再導覽到 <code>Flex</code> 的原始碼（同樣在 <code>basic.dart</code>）。<li><p>往下捲動直到找到名為 <code>createRenderObject()</code> 的方法。 如你所見，這個方法會回傳一個 <code>RenderFlex</code>。 這就是 <code>Column</code> 的 render-object。 現在導覽到 <code>RenderFlex</code> 的原始碼， 你會進入 <code>flex.dart</code> 檔案。<li><p>再往下捲動直到找到名為 <code>performLayout()</code> 的方法。 這個方法就是為 <code>Column</code> 做版面配置的地方。</ul><img src="/assets/images/docs/ui/layout/layout-final.png" alt="A goodbye layout"><hr><p>原文作者：Marcelo Glasberg<p>Marcelo 最初將這篇內容發表於 <a href="https://medium.com/flutter-community/flutter-the-advanced-layout-rule-even-beginners-must-know-edc9516d1a2">Flutter: The Advanced Layout Rule Even Beginners Must Know</a> （Medium）。我們非常喜歡這篇文章，因此邀請他授權 在 docs.flutter.dev 發表，他也很慷慨地同意了。感謝 Marcelo！ 你可以在 <a href="https://github.com/marcglasberg">GitHub</a> 和 <a href="https://pub.dev/publishers/glasberg.dev/packages">pub.dev</a> 找到 Marcelo。<p>同時也感謝 <a href="https://github.com/slightfoot">Simon Lightfoot</a> 製作了本文開頭的標題圖片。<aside class="alert alert-info"><div class="alert-header"><i class="material-symbols" aria-hidden="true" translate="no">info</i> <span>Note</span></div><div class="alert-content"><p>想更深入了解 Flutter 如何實作版面配置約束， 請參考以下 5 分鐘的影片：</p><lite-youtube videoid="jckqXR5CrPI" videotitle="Decoding Flutter: Unbounded height and width" videostartat="0"><p><a class="lite-youtube-fallback" href="https://www.youtube.com/watch/jckqXR5CrPI" target="_blank" rel="noopener">Watch on YouTube in a new tab: "Decoding Flutter: Unbounded height and width"</a></p></lite-youtube></div></aside><div id="trailing-content" data-nosnippet="true"><div id="page-feedback"><div class="feedback initial-feedback"><div>此頁面的內容是否對您有幫助？</div><div class="feedback-buttons"><button id="feedback-up-button" class="icon-button" aria-label="Yes, this page was helpful" title="Helpful"><span class="material-symbols" aria-hidden="true" translate="no">thumb_up</span></button> <button id="feedback-down-button" class="icon-button" aria-label="No, this page was not helpful or had an issue" title="Not helpful or had issue"><span class="material-symbols" aria-hidden="true" translate="no">thumb_down</span></button></div></div><div class="feedback good-feedback"><div>感謝您的回饋！</div><a href="https://github.com/flutter/website/issues/new?template=1_page_issue.yml&&page-url=https://docs.flutter.dev/ui/layout/constraints/&page-source=https://github.com/flutter/website/tree/main/src/content/ui/layout/constraints.md" class="text-button" aria-label="Provide feedback" target="_blank" rel="noopener"> <span class="material-symbols" aria-hidden="true" translate="no">feedback</span> <span>提供詳細內容</span> </a></div><div class="bad-feedback feedback"><div>感謝您的回饋！請告訴我們可以如何改進。</div><a href="https://github.com/flutter/website/issues/new?template=1_page_issue.yml&&page-url=https://docs.flutter.dev/ui/layout/constraints/&page-source=https://github.com/flutter/website/tree/main/src/content/ui/layout/constraints.md" class="text-button" aria-label="Provide feedback or report an issue" target="_blank" rel="noopener"> <span class="material-symbols" aria-hidden="true" translate="no">bug_report</span> <span>提供詳細內容</span> </a></div></div><p id="page-github-links"><span>除非另有說明，本網站上的文件反映最新的 Flutter 穩定版。頁面最後更新於 2025-10-27。</span> <a href="https://github.com/flutter/website/tree/main/src/content/ui/layout/constraints.md" target="_blank" rel="noopener">檢視原始碼</a> <span>或 </span><a href="https://github.com/flutter/website/issues/new?template=1_page_issue.yml&&page-url=https://docs.flutter.dev/ui/layout/constraints/&page-source=https://github.com/flutter/website/tree/main/src/content/ui/layout/constraints.md" title="Report an issue with this page" target="_blank" rel="noopener">回報問題</a>.</div></article></div></main></div><footer id="site-footer"><div class="footer-main footer-section"><a class="brand" href="https://flutter.dev"> <img src="/assets/images/branding/flutter/logo+text/horizontal/white.svg" alt="Flutter logo" width="164"> </a><div class="footer-social-links"><a class="icon-button" href="https://blog.flutter.dev" target="_blank" rel="noopener" title="Flutter's blog"> <svg><use href="/assets/images/social/medium.svg#medium" /></svg> </a><a class="icon-button" href="https://youtube.com/@flutterdev" target="_blank" rel="noopener" title="Flutter's YouTube"> <svg><use href="/assets/images/social/youtube.svg#youtube" /></svg> </a><a class="icon-button" href="https://github.com/flutter" target="_blank" rel="noopener" title="Flutter's GitHub"> <svg><use href="/assets/images/social/github.svg#github" /></svg> </a><a class="icon-button" href="https://bsky.app/profile/flutter.dev" target="_blank" rel="noopener" title="Flutter's Bluesky"> <svg><use href="/assets/images/social/bluesky.svg#bluesky" /></svg> </a><a class="icon-button" href="https://twitter.com/FlutterDev" target="_blank" rel="noopener" title="Flutter's X (Twitter)"> <svg><use href="/assets/images/social/x.svg#x" /></svg> </a></div></div><div class="footer-section footer-tray"><div class="footer-licenses">除非另有註明，本站係依照 <a href="https://creativecommons.org/licenses/by/4.0/">創用 CC 姓名標示 4.0 國際授權條款</a> 授權，而程式碼範例則採用 <a href="https://opensource.org/licenses/BSD-3-Clause">BSD 三條款授權</a>。</div><div class="footer-utility-links"><ul><li><a href="/tos" title="Terms of use">使用條款</a><li><a href="/brand" title="Brand usage guidelines">品牌規範</a><li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener" title="Privacy policy">隱私權</a><li><a href="/security" title="Security philosophy and practices">資安</a></ul></div></div></footer></div><script>let storedTheme=window.localStorage.getItem("theme")??"light-mode";"auto-mode"===storedTheme?document.body.classList.add("auto-mode",window.matchMedia("(prefers-color-scheme: dark)").matches?"dark-mode":"light-mode"):document.body.classList.add(storedTheme)</script><script src="/assets/js/tabs.js?v=7"></script> <script src="/assets/js/archive.js?v=7"></script> <script src="/assets/js/main.js?v=7"></script> <script src="/assets/js/inject_dartpad.dart.js" defer></script> <script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.8.1/lite-youtube.js" integrity="sha256-dSKwIYLvKdlkLGLp9ZRLJilBuGFSM5beizYOSvK1LeQ=" crossorigin referrerpolicy="no-referrer"></script>
